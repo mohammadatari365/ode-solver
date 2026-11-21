@@ -211,9 +211,24 @@
       <button type="button" class="kb-key" data-ins="1">1</button>
       <button type="button" class="kb-key" data-ins="2">2</button>
       <button type="button" class="kb-key" data-ins="3">3</button>
-      <button type="button" class="kb-key var" data-ins="x">x</button>
-      <button type="button" class="kb-key var" data-ins="y">y</button>
-      <button type="button" class="kb-key tpl" data-tpl="deriv" title="مشتق y — جایگاه مرتبه بالای عبارت">y<sup>n</sup>'</button>
+      <span class="kb-prime-host">
+        <button type="button" class="kb-key var" data-ins="x" title="x — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">x</button>
+        <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق x">
+          <button type="button" data-prime-var="x" data-prime-order="1" title="مشتق مرتبهٔ ۱ x">x'</button>
+          <button type="button" data-prime-var="x" data-prime-order="2" title="مشتق مرتبهٔ ۲ x">x''</button>
+          <button type="button" data-prime-var="x" data-prime-order="3" title="مشتق مرتبهٔ ۳ x">x'''</button>
+          <button type="button" data-prime-var="x" data-prime-order="4" title="مشتق مرتبهٔ ۴ x">x''''</button>
+        </span>
+      </span>
+      <span class="kb-prime-host">
+        <button type="button" class="kb-key var" data-ins="y" title="y — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">y</button>
+        <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق y">
+          <button type="button" data-prime-var="y" data-prime-order="1" title="مشتق مرتبهٔ ۱ y">y'</button>
+          <button type="button" data-prime-var="y" data-prime-order="2" title="مشتق مرتبهٔ ۲ y">y''</button>
+          <button type="button" data-prime-var="y" data-prime-order="3" title="مشتق مرتبهٔ ۳ y">y'''</button>
+          <button type="button" data-prime-var="y" data-prime-order="4" title="مشتق مرتبهٔ ۴ y">y''''</button>
+        </span>
+      </span>
       <button type="button" class="kb-key edit" data-act="right" title="حرکت به راست">→</button>
       <button type="button" class="kb-key var" data-ins="pi" title="عدد پی">π</button>
 

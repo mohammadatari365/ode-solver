@@ -1004,23 +1004,60 @@ body.kb-open .kb-fab { bottom: calc(var(--kb-h, 320px) + 12px); }
 .tpl-fn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
 .tpl-fnname { font-family: var(--mono); font-weight: 700; color: #0b756e; }
 
-/* قالب مشتق — جایگاه مرتبه بالای y (سبک کیبوردهای ریاضی) */
-.tpl-deriv { flex-direction: column; gap: 0; }
-.tpl-deriv-base {
-  font-family: var(--mono); font-size: 36px; font-style: italic;
-  line-height: 1; color: #e9f6ff; text-shadow: 0 0 12px rgba(0,240,255,.4);
+/* منوی مرتبهٔ مشتق بالای کلیدهای x و y (با نگه داشتن ماوس باز میشود) */
+.kb-prime-host { position: relative; display: block; min-width: 0; }
+.kb-prime-host > .kb-key { width: 100%; }
+.kb-prime-menu {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translate(-50%, 5px);
+  z-index: 30;
+  display: flex;
+  gap: 3px;
+  padding: 5px 6px;
+  white-space: nowrap;
+  direction: ltr;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 43, 214, .55);
+  background: rgba(8, 12, 26, .98);
+  box-shadow: 0 0 22px rgba(255, 43, 214, .25);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease, visibility .12s ease;
 }
-.tpl-deriv-sup { align-self: flex-start; transform: translateY(-15px); }
-.tpl-deriv .tpl-slot { width: 58px !important; min-width: 50px; font-size: 16px !important; }
-.tpl-order { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
-.tpl-order button {
-  min-width: 34px; height: 32px;
-  border: 1px solid rgba(0,240,255,.35);
-  border-radius: 8px; background: rgba(0,240,255,.06);
-  color: var(--neon-cyan); font: 700 14px var(--mono); cursor: pointer;
+/* پل نامرئی میان کلید و منو تا هنگام حرکت ماوس بسته نشود */
+.kb-prime-menu::before {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -9px; height: 9px;
 }
-.tpl-order button:hover { background: rgba(0,240,255,.18); box-shadow: 0 0 10px rgba(0,240,255,.25); }
-.tpl-order button.active { background: var(--neon-cyan); color: #04121e; box-shadow: 0 0 12px var(--neon-cyan); }
+.kb-prime-host:hover > .kb-prime-menu,
+.kb-prime-host:focus-within > .kb-prime-menu,
+.kb-prime-host.open > .kb-prime-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+.kb-prime-menu button {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 5px;
+  border: 1px solid rgba(0, 240, 255, .35);
+  border-radius: 7px;
+  background: rgba(0, 240, 255, .07);
+  color: #dff4ff;
+  font: 700 12px var(--mono);
+  cursor: pointer;
+}
+.kb-prime-menu button:hover,
+.kb-prime-menu button:focus-visible {
+  background: var(--neon-cyan);
+  color: #04121e;
+  box-shadow: 0 0 12px var(--neon-cyan);
+  outline: none;
+}
 
 @media (max-width: 560px) {
   .kb-dock { padding-left: 8px; padding-right: 8px; }
@@ -1584,9 +1621,24 @@ details.section[open] > summary::before { content: "▾"; }
       <button type="button" class="kb-key" data-ins="1">1</button>
       <button type="button" class="kb-key" data-ins="2">2</button>
       <button type="button" class="kb-key" data-ins="3">3</button>
-      <button type="button" class="kb-key var" data-ins="x">x</button>
-      <button type="button" class="kb-key var" data-ins="y">y</button>
-      <button type="button" class="kb-key tpl" data-tpl="deriv" title="مشتق y — جایگاه مرتبه بالای عبارت">y<sup>n</sup>'</button>
+      <span class="kb-prime-host">
+        <button type="button" class="kb-key var" data-ins="x" title="x — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">x</button>
+        <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق x">
+          <button type="button" data-prime-var="x" data-prime-order="1" title="مشتق مرتبهٔ ۱ x">x'</button>
+          <button type="button" data-prime-var="x" data-prime-order="2" title="مشتق مرتبهٔ ۲ x">x''</button>
+          <button type="button" data-prime-var="x" data-prime-order="3" title="مشتق مرتبهٔ ۳ x">x'''</button>
+          <button type="button" data-prime-var="x" data-prime-order="4" title="مشتق مرتبهٔ ۴ x">x''''</button>
+        </span>
+      </span>
+      <span class="kb-prime-host">
+        <button type="button" class="kb-key var" data-ins="y" title="y — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">y</button>
+        <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق y">
+          <button type="button" data-prime-var="y" data-prime-order="1" title="مشتق مرتبهٔ ۱ y">y'</button>
+          <button type="button" data-prime-var="y" data-prime-order="2" title="مشتق مرتبهٔ ۲ y">y''</button>
+          <button type="button" data-prime-var="y" data-prime-order="3" title="مشتق مرتبهٔ ۳ y">y'''</button>
+          <button type="button" data-prime-var="y" data-prime-order="4" title="مشتق مرتبهٔ ۴ y">y''''</button>
+        </span>
+      </span>
       <button type="button" class="kb-key edit" data-act="right" title="حرکت به راست">→</button>
       <button type="button" class="kb-key var" data-ins="pi" title="عدد پی">π</button>
 
@@ -2318,7 +2370,7 @@ var CAS = (function () {
 
   const FUNCS = ['sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'asin', 'acos', 'atan',
     'sinh', 'cosh', 'tanh', 'ln', 'log', 'exp', 'sqrt', 'abs'];
-  const VARS = ['x', 'y', 'yp', 'yp2', 'yp3', 'yp4', 'yp5', 'e', 'pi', 'u', 'v', 't', 's'];
+  const VARS = ['x', 'y', 'yp', 'ypp', 'yppp', 'ypppp', 'e', 'pi', 'u', 'v', 't', 's'];
 
   function normalize(src) {
     let s = String(src);
@@ -2334,9 +2386,14 @@ var CAS = (function () {
       for (var q = 0; q < n; q++) out += '′';
       return out;
     });
-    /* y' → yp ; y'' → yp2 ; y''' → yp3 (و الی آخر) */
-    s = s.replace(/y\s*((?:′|’|'|`)+)/g, function (m, marks) {
-      return marks.length === 1 ? 'yp' : 'yp' + marks.length;
+    /* y' → yp , y'' → ypp , ... (همان نامگذاری موتور حل) */
+    /* x' = dx/dx = 1 و x'' = 0 (متغیر مستقل است) */
+    s = s.replace(/([xy])\s*((?:′|’|'|`)+)/g, function (m, v, marks) {
+      var n = marks.length;
+      if (v === 'x') return n === 1 ? '(1)' : '(0)';
+      var name = 'y';
+      for (var q = 0; q < n; q++) name += 'p';
+      return name;
     });
     s = s.replace(/\s+/g, '');
     return s;
@@ -5352,8 +5409,7 @@ var CAS = (function () {
    ============================================================ */
 (function () {
   'use strict';
-  var YNAMES = ['y', "y'", "y''", "y'''", "y''''", "y'''''"];
-  var PRIME_MARKS = ['', "'", "''", "'''", "''''", "'''''"];
+  var YNAMES = ['y', "y'", "y''", "y'''", "y''''"];
 
   var dock = document.getElementById('kbDock');
   var toggle = document.getElementById('kbToggle');
@@ -5383,7 +5439,6 @@ var CAS = (function () {
   var returnEnd = 0;
   var compType = null;
   var selectedFn = 'exp';
-  var selectedOrder = 1;
 
   var TITLES = {
     power: 'توان — عبارت بالا نوشته می‌شود',
@@ -5391,7 +5446,6 @@ var CAS = (function () {
     sqrt: 'ریشه — عبارت داخل رادیکال',
     abs: 'قدر مطلق',
     paren: 'پرانتز',
-    deriv: 'مشتق y — مرتبه در جایگاه بالای عبارت',
     func: 'تابع — ورودی داخل پرانتز'
   };
 
@@ -5615,16 +5669,6 @@ var CAS = (function () {
         return '<div class="tpl-row tpl-paren"><span class="tpl-caret">(</span>' +
           slot('arg', 'داخل پرانتز', 'x') +
           '<span class="tpl-caret">)</span></div>';
-      case 'deriv':
-        return '<div class="tpl-row tpl-deriv">' +
-          '<span class="tpl-deriv-base">y</span>' +
-          '<span class="tpl-deriv-sup">' + slot('mark', 'مرتبه', PRIME_MARKS[selectedOrder] || "'", 'tpl-small') + '</span>' +
-          '</div>' +
-          '<div class="tpl-order">' +
-          [1, 2, 3, 4, 5].map(function (o) {
-            return '<button type="button" data-order="' + o + '" class="' +
-              (o === selectedOrder ? 'active' : '') + '" title="مشتق مرتبهٔ ' + o + '">' + o + '</button>';
-          }).join('') + '</div>';
       case 'func':
         return '<div class="tpl-row" style="flex-direction:column">' +
           '<div class="tpl-fnbtns">' +
@@ -5686,22 +5730,6 @@ var CAS = (function () {
     return '(' + s + ')';
   }
 
-  /* تعداد پرایمها را از مقدار جایگاه بالای y میخواند (عدد یا ′ ″ ‴ ⁗) */
-  function primeOrder(s) {
-    s = String(s == null ? '' : s).trim();
-    if (!s) return 0;
-    if (/^\d+$/.test(s)) return clamp(parseInt(s, 10), 0, 5);
-    var n = 0;
-    for (var i = 0; i < s.length; i++) {
-      var c = s.charAt(i);
-      if (c === '′' || c === '’' || c === "'" || c === '`') n += 1;
-      else if (c === '″') n += 2;
-      else if (c === '‴') n += 3;
-      else if (c === '⁗') n += 4;
-    }
-    return n;
-  }
-
   function insertComposed() {
     if (!compType || !returnTarget || !compBody) { closeComposer(); return; }
     var vals = {};
@@ -5721,11 +5749,6 @@ var CAS = (function () {
       text = '|' + (vals.arg || '') + '|';
     } else if (compType === 'paren') {
       text = '(' + (vals.arg || '') + ')';
-    } else if (compType === 'deriv') {
-      var order = clamp(primeOrder(vals.mark) || selectedOrder, 1, 5);
-      if (order !== selectedOrder) selectedOrder = order;
-      text = 'y';
-      for (var p = 0; p < order; p++) text += "'";
     } else if (compType === 'func') {
       text = selectedFn + '(' + (vals.arg || 'x') + ')';
     }
@@ -5776,6 +5799,18 @@ var CAS = (function () {
   keys.addEventListener('click', function (ev) {
     var b = ev.target && ev.target.closest ? ev.target.closest('button') : null;
     if (!b || !keys.contains(b)) return;
+    var po = b.getAttribute('data-prime-order');
+    if (po != null) {
+      var n = clamp(parseInt(po, 10) || 1, 1, 4);
+      var v = b.getAttribute('data-prime-var') === 'x' ? 'x' : 'y';
+      var marks = '';
+      for (var i = 0; i < n; i++) marks += "'";
+      insert(v + marks);
+      Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
+        h.classList.remove('open');
+      });
+      return;
+    }
     var tpl = b.getAttribute('data-tpl');
     if (tpl) { openComposer(tpl); return; }
     var act = b.getAttribute('data-act');
@@ -5786,24 +5821,27 @@ var CAS = (function () {
     insert(text, isNaN(caret) ? 0 : caret);
   });
 
+  /* نگه داشتن طولانی روی x / y هم منوی مشتق را باز میکند (برای لمسی) */
+  var pressTimer = null;
+  keys.addEventListener('pointerdown', function (ev) {
+    if (ev.pointerType === 'mouse') return;
+    var host = ev.target && ev.target.closest ? ev.target.closest('.kb-prime-host') : null;
+    if (!host) return;
+    clearTimeout(pressTimer);
+    pressTimer = setTimeout(function () { host.classList.add('open'); }, 320);
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (name) {
+    keys.addEventListener(name, function () { clearTimeout(pressTimer); });
+  });
+  document.addEventListener('pointerdown', function (ev) {
+    if (keys.contains(ev.target)) return;
+    Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
+      h.classList.remove('open');
+    });
+  });
+
   if (compBody) {
     compBody.addEventListener('click', function (ev) {
-      var ob = ev.target && ev.target.closest ? ev.target.closest('.tpl-order button') : null;
-      if (ob && compBody.contains(ob)) {
-        selectedOrder = clamp(parseInt(ob.getAttribute('data-order'), 10) || 1, 1, 5);
-        Array.prototype.forEach.call(compBody.querySelectorAll('.tpl-order button'), function (b) {
-          b.classList.toggle('active', Number(b.getAttribute('data-order')) === selectedOrder);
-        });
-        var mslot = compBody.querySelector('[data-slot="mark"]');
-        if (mslot) {
-          mslot.value = PRIME_MARKS[selectedOrder] || "'";
-          active = mslot;
-          selStart = selEnd = mslot.value.length;
-          focusActive();
-        }
-        refreshTarget();
-        return;
-      }
       var fb = ev.target && ev.target.closest ? ev.target.closest('.tpl-fn') : null;
       if (!fb) return;
       selectedFn = fb.getAttribute('data-fn') || 'exp';

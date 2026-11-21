@@ -989,23 +989,60 @@ body.kb-open .kb-fab { bottom: calc(var(--kb-h, 320px) + 12px); }
 .tpl-fn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
 .tpl-fnname { font-family: var(--mono); font-weight: 700; color: #0b756e; }
 
-/* قالب مشتق — جایگاه مرتبه بالای y (سبک کیبوردهای ریاضی) */
-.tpl-deriv { flex-direction: column; gap: 0; }
-.tpl-deriv-base {
-  font-family: var(--mono); font-size: 36px; font-style: italic;
-  line-height: 1; color: #e9f6ff; text-shadow: 0 0 12px rgba(0,240,255,.4);
+/* منوی مرتبهٔ مشتق بالای کلیدهای x و y (با نگه داشتن ماوس باز میشود) */
+.kb-prime-host { position: relative; display: block; min-width: 0; }
+.kb-prime-host > .kb-key { width: 100%; }
+.kb-prime-menu {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translate(-50%, 5px);
+  z-index: 30;
+  display: flex;
+  gap: 3px;
+  padding: 5px 6px;
+  white-space: nowrap;
+  direction: ltr;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 43, 214, .55);
+  background: rgba(8, 12, 26, .98);
+  box-shadow: 0 0 22px rgba(255, 43, 214, .25);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease, visibility .12s ease;
 }
-.tpl-deriv-sup { align-self: flex-start; transform: translateY(-15px); }
-.tpl-deriv .tpl-slot { width: 58px !important; min-width: 50px; font-size: 16px !important; }
-.tpl-order { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
-.tpl-order button {
-  min-width: 34px; height: 32px;
-  border: 1px solid rgba(0,240,255,.35);
-  border-radius: 8px; background: rgba(0,240,255,.06);
-  color: var(--neon-cyan); font: 700 14px var(--mono); cursor: pointer;
+/* پل نامرئی میان کلید و منو تا هنگام حرکت ماوس بسته نشود */
+.kb-prime-menu::before {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -9px; height: 9px;
 }
-.tpl-order button:hover { background: rgba(0,240,255,.18); box-shadow: 0 0 10px rgba(0,240,255,.25); }
-.tpl-order button.active { background: var(--neon-cyan); color: #04121e; box-shadow: 0 0 12px var(--neon-cyan); }
+.kb-prime-host:hover > .kb-prime-menu,
+.kb-prime-host:focus-within > .kb-prime-menu,
+.kb-prime-host.open > .kb-prime-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+.kb-prime-menu button {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 5px;
+  border: 1px solid rgba(0, 240, 255, .35);
+  border-radius: 7px;
+  background: rgba(0, 240, 255, .07);
+  color: #dff4ff;
+  font: 700 12px var(--mono);
+  cursor: pointer;
+}
+.kb-prime-menu button:hover,
+.kb-prime-menu button:focus-visible {
+  background: var(--neon-cyan);
+  color: #04121e;
+  box-shadow: 0 0 12px var(--neon-cyan);
+  outline: none;
+}
 
 @media (max-width: 560px) {
   .kb-dock { padding-left: 8px; padding-right: 8px; }

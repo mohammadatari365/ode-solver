@@ -5,7 +5,7 @@
 
   const FUNCS = ['sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'asin', 'acos', 'atan',
     'sinh', 'cosh', 'tanh', 'ln', 'log', 'exp', 'sqrt', 'abs'];
-  const VARS = ['x', 'y', 'yp', 'yp2', 'yp3', 'yp4', 'yp5', 'e', 'pi', 'u', 'v', 't', 's'];
+  const VARS = ['x', 'y', 'yp', 'ypp', 'yppp', 'ypppp', 'e', 'pi', 'u', 'v', 't', 's'];
 
   function normalize(src) {
     let s = String(src);
@@ -21,9 +21,14 @@
       for (var q = 0; q < n; q++) out += '′';
       return out;
     });
-    /* y' → yp ; y'' → yp2 ; y''' → yp3 (و الی آخر) */
-    s = s.replace(/y\s*((?:′|’|'|`)+)/g, function (m, marks) {
-      return marks.length === 1 ? 'yp' : 'yp' + marks.length;
+    /* y' → yp , y'' → ypp , ... (همان نامگذاری موتور حل) */
+    /* x' = dx/dx = 1 و x'' = 0 (متغیر مستقل است) */
+    s = s.replace(/([xy])\s*((?:′|’|'|`)+)/g, function (m, v, marks) {
+      var n = marks.length;
+      if (v === 'x') return n === 1 ? '(1)' : '(0)';
+      var name = 'y';
+      for (var q = 0; q < n; q++) name += 'p';
+      return name;
     });
     s = s.replace(/\s+/g, '');
     return s;
