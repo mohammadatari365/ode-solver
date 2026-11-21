@@ -989,6 +989,24 @@ body.kb-open .kb-fab { bottom: calc(var(--kb-h, 320px) + 12px); }
 .tpl-fn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
 .tpl-fnname { font-family: var(--mono); font-weight: 700; color: #0b756e; }
 
+/* قالب مشتق — جایگاه مرتبه بالای y (سبک کیبوردهای ریاضی) */
+.tpl-deriv { flex-direction: column; gap: 0; }
+.tpl-deriv-base {
+  font-family: var(--mono); font-size: 36px; font-style: italic;
+  line-height: 1; color: #e9f6ff; text-shadow: 0 0 12px rgba(0,240,255,.4);
+}
+.tpl-deriv-sup { align-self: flex-start; transform: translateY(-15px); }
+.tpl-deriv .tpl-slot { width: 58px !important; min-width: 50px; font-size: 16px !important; }
+.tpl-order { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.tpl-order button {
+  min-width: 34px; height: 32px;
+  border: 1px solid rgba(0,240,255,.35);
+  border-radius: 8px; background: rgba(0,240,255,.06);
+  color: var(--neon-cyan); font: 700 14px var(--mono); cursor: pointer;
+}
+.tpl-order button:hover { background: rgba(0,240,255,.18); box-shadow: 0 0 10px rgba(0,240,255,.25); }
+.tpl-order button.active { background: var(--neon-cyan); color: #04121e; box-shadow: 0 0 12px var(--neon-cyan); }
+
 @media (max-width: 560px) {
   .kb-dock { padding-left: 8px; padding-right: 8px; }
   .kb-keys { gap: 4px; }

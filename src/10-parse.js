@@ -5,7 +5,7 @@
 
   const FUNCS = ['sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'asin', 'acos', 'atan',
     'sinh', 'cosh', 'tanh', 'ln', 'log', 'exp', 'sqrt', 'abs'];
-  const VARS = ['x', 'y', 'yp', 'e', 'pi', 'u', 'v', 't', 's'];
+  const VARS = ['x', 'y', 'yp', 'yp2', 'yp3', 'yp4', 'yp5', 'e', 'pi', 'u', 'v', 't', 's'];
 
   function normalize(src) {
     let s = String(src);
@@ -14,7 +14,17 @@
     s = s.replace(/[−–—]/g, '-').replace(/[×·∙•]/g, '*').replace(/÷/g, '/');
     s = s.replace(/π/g, 'pi').replace(/√/g, 'sqrt');
     s = s.replace(/²/g, '^2').replace(/³/g, '^3').replace(/⁴/g, '^4');
-    s = s.replace(/y\s*(′|’|'|`)/g, 'yp');
+    /* تاگهای مرکب یونیکی (″ ‴ ⁗) را به پرایمهای ساده تبدیل میکنیم */
+    s = s.replace(/[″‴⁗]/g, function (m) {
+      var n = { '″': 2, '‴': 3, '⁗': 4 }[m] || 1;
+      var out = '';
+      for (var q = 0; q < n; q++) out += '′';
+      return out;
+    });
+    /* y' → yp ; y'' → yp2 ; y''' → yp3 (و الی آخر) */
+    s = s.replace(/y\s*((?:′|’|'|`)+)/g, function (m, marks) {
+      return marks.length === 1 ? 'yp' : 'yp' + marks.length;
+    });
     s = s.replace(/\s+/g, '');
     return s;
   }

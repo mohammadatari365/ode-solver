@@ -1004,6 +1004,24 @@ body.kb-open .kb-fab { bottom: calc(var(--kb-h, 320px) + 12px); }
 .tpl-fn.active { background: var(--brand); border-color: var(--brand); color: #fff; }
 .tpl-fnname { font-family: var(--mono); font-weight: 700; color: #0b756e; }
 
+/* قالب مشتق — جایگاه مرتبه بالای y (سبک کیبوردهای ریاضی) */
+.tpl-deriv { flex-direction: column; gap: 0; }
+.tpl-deriv-base {
+  font-family: var(--mono); font-size: 36px; font-style: italic;
+  line-height: 1; color: #e9f6ff; text-shadow: 0 0 12px rgba(0,240,255,.4);
+}
+.tpl-deriv-sup { align-self: flex-start; transform: translateY(-15px); }
+.tpl-deriv .tpl-slot { width: 58px !important; min-width: 50px; font-size: 16px !important; }
+.tpl-order { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.tpl-order button {
+  min-width: 34px; height: 32px;
+  border: 1px solid rgba(0,240,255,.35);
+  border-radius: 8px; background: rgba(0,240,255,.06);
+  color: var(--neon-cyan); font: 700 14px var(--mono); cursor: pointer;
+}
+.tpl-order button:hover { background: rgba(0,240,255,.18); box-shadow: 0 0 10px rgba(0,240,255,.25); }
+.tpl-order button.active { background: var(--neon-cyan); color: #04121e; box-shadow: 0 0 12px var(--neon-cyan); }
+
 @media (max-width: 560px) {
   .kb-dock { padding-left: 8px; padding-right: 8px; }
   .kb-keys { gap: 4px; }
@@ -1595,7 +1613,7 @@ details.section[open] > summary::before { content: "▾"; }
       <button type="button" class="kb-key" data-ins="3">3</button>
       <button type="button" class="kb-key var" data-ins="x">x</button>
       <button type="button" class="kb-key var" data-ins="y">y</button>
-      <button type="button" class="kb-key var" data-ins="y'" title="مشتق اول y">y′</button>
+      <button type="button" class="kb-key tpl" data-tpl="deriv" title="مشتق y — جایگاه مرتبه بالای عبارت">yⁿ′</button>
       <button type="button" class="kb-key edit" data-act="right" title="حرکت به راست">→</button>
       <button type="button" class="kb-key var" data-ins="pi" title="عدد پی">π</button>
 
@@ -2327,7 +2345,7 @@ var CAS = (function () {
 
   const FUNCS = ['sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'asin', 'acos', 'atan',
     'sinh', 'cosh', 'tanh', 'ln', 'log', 'exp', 'sqrt', 'abs'];
-  const VARS = ['x', 'y', 'yp', 'e', 'pi', 'u', 'v', 't', 's'];
+  const VARS = ['x', 'y', 'yp', 'yp2', 'yp3', 'yp4', 'yp5', 'e', 'pi', 'u', 'v', 't', 's'];
 
   function normalize(src) {
     let s = String(src);
@@ -2336,7 +2354,17 @@ var CAS = (function () {
     s = s.replace(/[−–—]/g, '-').replace(/[×·∙•]/g, '*').replace(/÷/g, '/');
     s = s.replace(/π/g, 'pi').replace(/√/g, 'sqrt');
     s = s.replace(/²/g, '^2').replace(/³/g, '^3').replace(/⁴/g, '^4');
-    s = s.replace(/y\s*(′|’|'|`)/g, 'yp');
+    /* تاگهای مرکب یونیکی (″ ‴ ⁗) را به پرایمهای ساده تبدیل میکنیم */
+    s = s.replace(/[″‴⁗]/g, function (m) {
+      var n = { '″': 2, '‴': 3, '⁗': 4 }[m] || 1;
+      var out = '';
+      for (var q = 0; q < n; q++) out += '′';
+      return out;
+    });
+    /* y' → yp ; y'' → yp2 ; y''' → yp3 (و الی آخر) */
+    s = s.replace(/y\s*((?:′|’|'|`)+)/g, function (m, marks) {
+      return marks.length === 1 ? 'yp' : 'yp' + marks.length;
+    });
     s = s.replace(/\s+/g, '');
     return s;
   }
@@ -5351,7 +5379,8 @@ var CAS = (function () {
    ============================================================ */
 (function () {
   'use strict';
-  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗'];
+  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗', 'y⁽⁵⁾'];
+  var PRIME_MARKS = ['', '′', '″', '‴', '⁗', '⁗′'];
 
   var dock = document.getElementById('kbDock');
   var toggle = document.getElementById('kbToggle');
@@ -5381,6 +5410,7 @@ var CAS = (function () {
   var returnEnd = 0;
   var compType = null;
   var selectedFn = 'exp';
+  var selectedOrder = 1;
 
   var TITLES = {
     power: 'توان — عبارت بالا نوشته می‌شود',
@@ -5388,6 +5418,7 @@ var CAS = (function () {
     sqrt: 'ریشه — عبارت داخل رادیکال',
     abs: 'قدر مطلق',
     paren: 'پرانتز',
+    deriv: 'مشتق y — مرتبه در جایگاه بالای عبارت',
     func: 'تابع — ورودی داخل پرانتز'
   };
 
@@ -5611,6 +5642,16 @@ var CAS = (function () {
         return '<div class="tpl-row tpl-paren"><span class="tpl-caret">(</span>' +
           slot('arg', 'داخل پرانتز', 'x') +
           '<span class="tpl-caret">)</span></div>';
+      case 'deriv':
+        return '<div class="tpl-row tpl-deriv">' +
+          '<span class="tpl-deriv-base">y</span>' +
+          '<span class="tpl-deriv-sup">' + slot('mark', 'مرتبه', PRIME_MARKS[selectedOrder] || '′', 'tpl-small') + '</span>' +
+          '</div>' +
+          '<div class="tpl-order">' +
+          [1, 2, 3, 4, 5].map(function (o) {
+            return '<button type="button" data-order="' + o + '" class="' +
+              (o === selectedOrder ? 'active' : '') + '" title="مشتق مرتبهٔ ' + o + '">' + o + '</button>';
+          }).join('') + '</div>';
       case 'func':
         return '<div class="tpl-row" style="flex-direction:column">' +
           '<div class="tpl-fnbtns">' +
@@ -5672,6 +5713,22 @@ var CAS = (function () {
     return '(' + s + ')';
   }
 
+  /* تعداد پرایمها را از مقدار جایگاه بالای y میخواند (عدد یا ′ ″ ‴ ⁗) */
+  function primeOrder(s) {
+    s = String(s == null ? '' : s).trim();
+    if (!s) return 0;
+    if (/^\d+$/.test(s)) return clamp(parseInt(s, 10), 0, 5);
+    var n = 0;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charAt(i);
+      if (c === '′' || c === '’' || c === "'" || c === '`') n += 1;
+      else if (c === '″') n += 2;
+      else if (c === '‴') n += 3;
+      else if (c === '⁗') n += 4;
+    }
+    return n;
+  }
+
   function insertComposed() {
     if (!compType || !returnTarget || !compBody) { closeComposer(); return; }
     var vals = {};
@@ -5691,6 +5748,11 @@ var CAS = (function () {
       text = '|' + (vals.arg || '') + '|';
     } else if (compType === 'paren') {
       text = '(' + (vals.arg || '') + ')';
+    } else if (compType === 'deriv') {
+      var order = clamp(primeOrder(vals.mark) || selectedOrder, 1, 5);
+      if (order !== selectedOrder) selectedOrder = order;
+      text = 'y';
+      for (var p = 0; p < order; p++) text += "'";
     } else if (compType === 'func') {
       text = selectedFn + '(' + (vals.arg || 'x') + ')';
     }
@@ -5753,6 +5815,22 @@ var CAS = (function () {
 
   if (compBody) {
     compBody.addEventListener('click', function (ev) {
+      var ob = ev.target && ev.target.closest ? ev.target.closest('.tpl-order button') : null;
+      if (ob && compBody.contains(ob)) {
+        selectedOrder = clamp(parseInt(ob.getAttribute('data-order'), 10) || 1, 1, 5);
+        Array.prototype.forEach.call(compBody.querySelectorAll('.tpl-order button'), function (b) {
+          b.classList.toggle('active', Number(b.getAttribute('data-order')) === selectedOrder);
+        });
+        var mslot = compBody.querySelector('[data-slot="mark"]');
+        if (mslot) {
+          mslot.value = PRIME_MARKS[selectedOrder] || '′';
+          active = mslot;
+          selStart = selEnd = mslot.value.length;
+          focusActive();
+        }
+        refreshTarget();
+        return;
+      }
       var fb = ev.target && ev.target.closest ? ev.target.closest('.tpl-fn') : null;
       if (!fb) return;
       selectedFn = fb.getAttribute('data-fn') || 'exp';

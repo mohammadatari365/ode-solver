@@ -3,7 +3,8 @@
    ============================================================ */
 (function () {
   'use strict';
-  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗'];
+  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗', 'y⁽⁵⁾'];
+  var PRIME_MARKS = ['', '′', '″', '‴', '⁗', '⁗′'];
 
   var dock = document.getElementById('kbDock');
   var toggle = document.getElementById('kbToggle');
@@ -33,6 +34,7 @@
   var returnEnd = 0;
   var compType = null;
   var selectedFn = 'exp';
+  var selectedOrder = 1;
 
   var TITLES = {
     power: 'توان — عبارت بالا نوشته می‌شود',
@@ -40,6 +42,7 @@
     sqrt: 'ریشه — عبارت داخل رادیکال',
     abs: 'قدر مطلق',
     paren: 'پرانتز',
+    deriv: 'مشتق y — مرتبه در جایگاه بالای عبارت',
     func: 'تابع — ورودی داخل پرانتز'
   };
 
@@ -263,6 +266,16 @@
         return '<div class="tpl-row tpl-paren"><span class="tpl-caret">(</span>' +
           slot('arg', 'داخل پرانتز', 'x') +
           '<span class="tpl-caret">)</span></div>';
+      case 'deriv':
+        return '<div class="tpl-row tpl-deriv">' +
+          '<span class="tpl-deriv-base">y</span>' +
+          '<span class="tpl-deriv-sup">' + slot('mark', 'مرتبه', PRIME_MARKS[selectedOrder] || '′', 'tpl-small') + '</span>' +
+          '</div>' +
+          '<div class="tpl-order">' +
+          [1, 2, 3, 4, 5].map(function (o) {
+            return '<button type="button" data-order="' + o + '" class="' +
+              (o === selectedOrder ? 'active' : '') + '" title="مشتق مرتبهٔ ' + o + '">' + o + '</button>';
+          }).join('') + '</div>';
       case 'func':
         return '<div class="tpl-row" style="flex-direction:column">' +
           '<div class="tpl-fnbtns">' +
@@ -324,6 +337,22 @@
     return '(' + s + ')';
   }
 
+  /* تعداد پرایمها را از مقدار جایگاه بالای y میخواند (عدد یا ′ ″ ‴ ⁗) */
+  function primeOrder(s) {
+    s = String(s == null ? '' : s).trim();
+    if (!s) return 0;
+    if (/^\d+$/.test(s)) return clamp(parseInt(s, 10), 0, 5);
+    var n = 0;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charAt(i);
+      if (c === '′' || c === '’' || c === "'" || c === '`') n += 1;
+      else if (c === '″') n += 2;
+      else if (c === '‴') n += 3;
+      else if (c === '⁗') n += 4;
+    }
+    return n;
+  }
+
   function insertComposed() {
     if (!compType || !returnTarget || !compBody) { closeComposer(); return; }
     var vals = {};
@@ -343,6 +372,11 @@
       text = '|' + (vals.arg || '') + '|';
     } else if (compType === 'paren') {
       text = '(' + (vals.arg || '') + ')';
+    } else if (compType === 'deriv') {
+      var order = clamp(primeOrder(vals.mark) || selectedOrder, 1, 5);
+      if (order !== selectedOrder) selectedOrder = order;
+      text = 'y';
+      for (var p = 0; p < order; p++) text += "'";
     } else if (compType === 'func') {
       text = selectedFn + '(' + (vals.arg || 'x') + ')';
     }
@@ -405,6 +439,22 @@
 
   if (compBody) {
     compBody.addEventListener('click', function (ev) {
+      var ob = ev.target && ev.target.closest ? ev.target.closest('.tpl-order button') : null;
+      if (ob && compBody.contains(ob)) {
+        selectedOrder = clamp(parseInt(ob.getAttribute('data-order'), 10) || 1, 1, 5);
+        Array.prototype.forEach.call(compBody.querySelectorAll('.tpl-order button'), function (b) {
+          b.classList.toggle('active', Number(b.getAttribute('data-order')) === selectedOrder);
+        });
+        var mslot = compBody.querySelector('[data-slot="mark"]');
+        if (mslot) {
+          mslot.value = PRIME_MARKS[selectedOrder] || '′';
+          active = mslot;
+          selStart = selEnd = mslot.value.length;
+          focusActive();
+        }
+        refreshTarget();
+        return;
+      }
       var fb = ev.target && ev.target.closest ? ev.target.closest('.tpl-fn') : null;
       if (!fb) return;
       selectedFn = fb.getAttribute('data-fn') || 'exp';
