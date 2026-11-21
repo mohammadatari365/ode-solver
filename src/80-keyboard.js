@@ -3,8 +3,8 @@
    ============================================================ */
 (function () {
   'use strict';
-  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗', 'y⁽⁵⁾'];
-  var PRIME_MARKS = ['', '′', '″', '‴', '⁗', '⁗′'];
+  var YNAMES = ['y', "y'", "y''", "y'''", "y''''", "y'''''"];
+  var PRIME_MARKS = ['', "'", "''", "'''", "''''", "'''''"];
 
   var dock = document.getElementById('kbDock');
   var toggle = document.getElementById('kbToggle');
@@ -269,7 +269,7 @@
       case 'deriv':
         return '<div class="tpl-row tpl-deriv">' +
           '<span class="tpl-deriv-base">y</span>' +
-          '<span class="tpl-deriv-sup">' + slot('mark', 'مرتبه', PRIME_MARKS[selectedOrder] || '′', 'tpl-small') + '</span>' +
+          '<span class="tpl-deriv-sup">' + slot('mark', 'مرتبه', PRIME_MARKS[selectedOrder] || "'", 'tpl-small') + '</span>' +
           '</div>' +
           '<div class="tpl-order">' +
           [1, 2, 3, 4, 5].map(function (o) {
@@ -447,7 +447,7 @@
         });
         var mslot = compBody.querySelector('[data-slot="mark"]');
         if (mslot) {
-          mslot.value = PRIME_MARKS[selectedOrder] || '′';
+          mslot.value = PRIME_MARKS[selectedOrder] || "'";
           active = mslot;
           selStart = selEnd = mslot.value.length;
           focusActive();

@@ -1082,26 +1082,7 @@ body {
     linear-gradient(180deg, #070b16, #04060d 62%, #0a0512);
 }
 
-/* شبکهٔ کف + خطوط اسکن CRT */
-body::before {
-  content: "";
-  position: fixed; inset: 0; z-index: -2; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0, 240, 255, .055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, .055) 1px, transparent 1px);
-  background-size: 44px 44px;
-  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.95), transparent 88%);
-  mask-image: linear-gradient(180deg, rgba(0,0,0,.95), transparent 88%);
-}
-body::after {
-  content: "";
-  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
-  background: repeating-linear-gradient(180deg,
-    rgba(0,0,0,.18) 0, rgba(0,0,0,.18) 1px, transparent 1px, transparent 3px);
-  opacity: .32;
-  animation: cy-scan 9s linear infinite;
-}
-@keyframes cy-scan { to { background-position: 0 300px; } }
+/* پسزمینه تمیز — بدون خطوط اسکن/شبکه که روی متن تداخل ایجاد میکردند */
 
 /* هدر — پنل HUD با گوشههای برشخورده */
 .hero {
@@ -1110,13 +1091,6 @@ body::after {
   box-shadow: var(--shadow-lg), inset 0 0 46px rgba(0, 240, 255, .05);
   clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
 }
-.hero::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(0,240,255,.10), transparent);
-  transform: translateX(-100%);
-  animation: cy-sweep 6.5s linear infinite;
-}
-@keyframes cy-sweep { 0% { transform: translateX(-100%); } 62%, 100% { transform: translateX(100%); } }
 .logo-mark {
   background: rgba(0, 240, 255, .1);
   border-color: rgba(0, 240, 255, .55);
@@ -1369,7 +1343,7 @@ details.section[open] > summary::before { content: "▾"; }
 .source-link:hover { background: rgba(255, 43, 214, .14); color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
-  body::after, .hero::before, .method-name .dot { animation: none !important; }
+  .method-name .dot { animation: none !important; }
 }
 
 /* چاپ */
@@ -1392,8 +1366,7 @@ details.section[open] > summary::before { content: "▾"; }
   .source-note { color: #555; }
   /* خنثی کردن تم سایبرپانک هنگام چاپ */
   body { color: #000 !important; background: #fff !important; }
-  body::before, body::after, .hero::before, .card::before, .card::after,
-  .answer-box::before { display: none !important; }
+  .card::before, .card::after, .answer-box::before { display: none !important; }
   .hero { background: #fff !important; border: 1px solid #ccc !important; box-shadow: none !important; clip-path: none !important; color: #000 !important; }
   .hero h1, .card-head h2, .method-name, .step-title, .empty-state h3,
   .source-ref > summary, .logo-mark, .handle, .chip-soft { color: #000 !important; text-shadow: none !important; box-shadow: none !important; }
@@ -1613,7 +1586,7 @@ details.section[open] > summary::before { content: "▾"; }
       <button type="button" class="kb-key" data-ins="3">3</button>
       <button type="button" class="kb-key var" data-ins="x">x</button>
       <button type="button" class="kb-key var" data-ins="y">y</button>
-      <button type="button" class="kb-key tpl" data-tpl="deriv" title="مشتق y — جایگاه مرتبه بالای عبارت">yⁿ′</button>
+      <button type="button" class="kb-key tpl" data-tpl="deriv" title="مشتق y — جایگاه مرتبه بالای عبارت">y<sup>n</sup>'</button>
       <button type="button" class="kb-key edit" data-act="right" title="حرکت به راست">→</button>
       <button type="button" class="kb-key var" data-ins="pi" title="عدد پی">π</button>
 
@@ -5379,8 +5352,8 @@ var CAS = (function () {
    ============================================================ */
 (function () {
   'use strict';
-  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗', 'y⁽⁵⁾'];
-  var PRIME_MARKS = ['', '′', '″', '‴', '⁗', '⁗′'];
+  var YNAMES = ['y', "y'", "y''", "y'''", "y''''", "y'''''"];
+  var PRIME_MARKS = ['', "'", "''", "'''", "''''", "'''''"];
 
   var dock = document.getElementById('kbDock');
   var toggle = document.getElementById('kbToggle');
@@ -5645,7 +5618,7 @@ var CAS = (function () {
       case 'deriv':
         return '<div class="tpl-row tpl-deriv">' +
           '<span class="tpl-deriv-base">y</span>' +
-          '<span class="tpl-deriv-sup">' + slot('mark', 'مرتبه', PRIME_MARKS[selectedOrder] || '′', 'tpl-small') + '</span>' +
+          '<span class="tpl-deriv-sup">' + slot('mark', 'مرتبه', PRIME_MARKS[selectedOrder] || "'", 'tpl-small') + '</span>' +
           '</div>' +
           '<div class="tpl-order">' +
           [1, 2, 3, 4, 5].map(function (o) {
@@ -5823,7 +5796,7 @@ var CAS = (function () {
         });
         var mslot = compBody.querySelector('[data-slot="mark"]');
         if (mslot) {
-          mslot.value = PRIME_MARKS[selectedOrder] || '′';
+          mslot.value = PRIME_MARKS[selectedOrder] || "'";
           active = mslot;
           selStart = selEnd = mslot.value.length;
           focusActive();
