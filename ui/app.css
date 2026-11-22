@@ -88,9 +88,9 @@ body {
   display: grid;
   place-items: center;
   font-family: var(--mono);
-  font-size: 22px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: .5px;
+  letter-spacing: 0;
   backdrop-filter: blur(4px);
 }
 .authors {
@@ -405,7 +405,8 @@ textarea { min-height: 74px; resize: vertical; font-family: var(--mono); font-si
   border-radius: 20px;
   display: grid;
   place-items: center;
-  font-size: 30px;
+  font-size: 15px;
+  letter-spacing: .5px;
   background: linear-gradient(135deg, #eef4ff, #f5efff);
   border: 1px solid #e3ebf7;
 }

@@ -238,7 +238,7 @@
     var box = $('resultWrap');
     box.innerHTML =
       '<div class="empty-state fade-in">' +
-      '<div class="icon">∫</div>' +
+      '<div class="icon">pgu</div>' +
       '<h3>' + esc(title || 'آمادهٔ حل هستید') + '</h3>' +
       '<p>' + esc(text || 'ضرایب معادله را وارد کنید و دکمهٔ «حل گام‌به‌گام» را بزنید. برنامه نوع معادله را تشخیص می‌دهد و مراحل را به فارسی توضیح می‌دهد.') + '</p>' +
       '</div>';
@@ -450,7 +450,7 @@
     var fav = document.getElementById('favicon');
     if (fav) {
       fav.href = 'data:image/svg+xml,' + encodeURIComponent(
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f6feb"/><text x="32" y="45" font-size="38" text-anchor="middle" fill="#fff" font-family="serif">∫</text></svg>');
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f6feb"/><text x="32" y="39" font-size="22" text-anchor="middle" fill="#fff" font-family="monospace">pgu</text></svg>');
     }
   }
 
