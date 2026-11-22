@@ -66,6 +66,105 @@
           <div class="coef-list" id="coefList"></div>
         </div>
 
+        <!-- ------------------------------ صفحهکلید داخلی ------------------------------ -->
+        <div class="kb-dock" id="kbDock" role="dialog" aria-label="صفحهکلید ریاضی" aria-modal="false" hidden>
+          <div class="kb-bar">
+            <div class="kb-title">
+              <span class="kb-icon" aria-hidden="true">⌨</span>
+              <span>صفحهکلید ریاضی</span>
+              <span class="kb-target" id="kbTarget">فیلدی را انتخاب کنید</span>
+            </div>
+            <div class="kb-bar-actions">
+              <button type="button" class="kb-mini" id="kbClose" title="بستن (Esc)" aria-label="بستن صفحهکلید">✕</button>
+            </div>
+          </div>
+
+          <div class="kb-preview" aria-live="polite">
+            <span class="kb-preview-cap">پیشنمایش</span>
+            <div class="kb-preview-math" id="kbPreviewMath">—</div>
+            <div class="kb-preview-raw" id="kbPreviewRaw"></div>
+          </div>
+
+          <div class="kb-keys" id="kbKeys" aria-label="کلیدهای ریاضی">
+            <button type="button" class="kb-key" data-ins="7">7</button>
+            <button type="button" class="kb-key" data-ins="8">8</button>
+            <button type="button" class="kb-key" data-ins="9">9</button>
+            <button type="button" class="kb-key op" data-ins="/" title="تقسیم">÷</button>
+            <button type="button" class="kb-key op" data-ins="*" title="ضرب">×</button>
+            <button type="button" class="kb-key edit" data-act="end" title="انتهای خط">⇥</button>
+            <button type="button" class="kb-key edit" data-act="home" title="ابتدای خط">⇤</button>
+            <button type="button" class="kb-key edit" data-act="back" title="پاک کردن آخرین نویسه">⌫</button>
+
+            <button type="button" class="kb-key" data-ins="4">4</button>
+            <button type="button" class="kb-key" data-ins="5">5</button>
+            <button type="button" class="kb-key" data-ins="6">6</button>
+            <button type="button" class="kb-key op" data-ins="-">−</button>
+            <button type="button" class="kb-key op" data-ins="+">+</button>
+            <button type="button" class="kb-key op" data-ins="^" title="توان">^</button>
+            <button type="button" class="kb-key op" data-ins="=">=</button>
+            <button type="button" class="kb-key edit" data-act="left" title="حرکت به چپ">←</button>
+
+            <button type="button" class="kb-key" data-ins="1">1</button>
+            <button type="button" class="kb-key" data-ins="2">2</button>
+            <button type="button" class="kb-key" data-ins="3">3</button>
+            <span class="kb-prime-host">
+              <button type="button" class="kb-key var" data-ins="x" title="x — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">x</button>
+              <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق x">
+                <button type="button" data-prime-var="x" data-prime-order="1" title="مشتق مرتبهٔ ۱ x">x'</button>
+                <button type="button" data-prime-var="x" data-prime-order="2" title="مشتق مرتبهٔ ۲ x">x''</button>
+                <button type="button" data-prime-var="x" data-prime-order="3" title="مشتق مرتبهٔ ۳ x">x'''</button>
+                <button type="button" data-prime-var="x" data-prime-order="4" title="مشتق مرتبهٔ ۴ x">x''''</button>
+              </span>
+            </span>
+            <span class="kb-prime-host">
+              <button type="button" class="kb-key var" data-ins="y" title="y — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">y</button>
+              <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق y">
+                <button type="button" data-prime-var="y" data-prime-order="1" title="مشتق مرتبهٔ ۱ y">y'</button>
+                <button type="button" data-prime-var="y" data-prime-order="2" title="مشتق مرتبهٔ ۲ y">y''</button>
+                <button type="button" data-prime-var="y" data-prime-order="3" title="مشتق مرتبهٔ ۳ y">y'''</button>
+                <button type="button" data-prime-var="y" data-prime-order="4" title="مشتق مرتبهٔ ۴ y">y''''</button>
+              </span>
+            </span>
+            <button type="button" class="kb-key edit" data-act="right" title="حرکت به راست">→</button>
+            <button type="button" class="kb-key var" data-ins="pi" title="عدد پی">π</button>
+
+            <button type="button" class="kb-key" data-ins="0">0</button>
+            <button type="button" class="kb-key fn" data-ins="exp()" data-caret="-1">exp</button>
+            <button type="button" class="kb-key fn" data-ins="ln()" data-caret="-1">ln</button>
+            <button type="button" class="kb-key fn" data-ins="sqrt()" data-caret="-1">√</button>
+            <button type="button" class="kb-key fn" data-ins="sin()" data-caret="-1">sin</button>
+            <button type="button" class="kb-key fn" data-ins="cos()" data-caret="-1">cos</button>
+            <button type="button" class="kb-key fn" data-ins="tan()" data-caret="-1">tan</button>
+            <button type="button" class="kb-key var" data-ins="e" title="پایهٔ لگاریتم طبیعی">e</button>
+
+            <button type="button" class="kb-key tpl" data-tpl="power" title="توان با جایگاه بالای عبارت">xⁿ</button>
+            <button type="button" class="kb-key tpl" data-tpl="frac" title="کسر با صورت و مخرج">a/b</button>
+            <button type="button" class="kb-key tpl" data-tpl="sqrt" title="ریشه با جایگاه داخل">√□</button>
+            <button type="button" class="kb-key tpl" data-tpl="abs" title="قدر مطلق">|□|</button>
+            <button type="button" class="kb-key tpl" data-tpl="func" title="تابع با جایگاه ورودی">f( )</button>
+            <button type="button" class="kb-key tpl" data-tpl="paren" title="پرانتز">( )</button>
+            <button type="button" class="kb-key edit wide" data-act="clear" title="پاک کردن تمام فیلد">پاک</button>
+          </div>
+
+          <div class="kb-composer" id="kbComposer" hidden>
+            <div class="kb-comp-head">
+              <span id="kbCompTitle">ساختار</span>
+              <button type="button" class="kb-mini" id="kbCompClose" aria-label="بستن ساختار">✕</button>
+            </div>
+            <div class="kb-comp-body" id="kbCompBody"></div>
+            <div class="kb-comp-foot">
+              <span class="kb-comp-hint">جایگاه‌ها را با همان کیبورد پر کنید</span>
+              <button type="button" class="kb-comp-cancel" id="kbCompCancel">لغو</button>
+              <button type="button" class="kb-comp-ok" id="kbCompInsert">درج</button>
+            </div>
+          </div>
+
+          <div class="kb-foot">
+            <span class="kb-tip">روی فیلد بزنید؛ کلیدهای xⁿ، a/b و √□ جایگاه‌های تصویری باز میکنند. نیازی به کیبورد دستگاه نیست.</span>
+            <button type="button" class="kb-solve" id="kbSolve">حل گام به گام ↵</button>
+          </div>
+        </div>
+
         <div id="rhsRow">
           <label class="switch-row" for="nonhomCheck">
             <input type="checkbox" id="nonhomCheck">
@@ -172,105 +271,6 @@
       </div>
     </details>
   </footer>
-
-  <!-- ------------------------------ صفحهکلید داخلی ------------------------------ -->
-  <div class="kb-dock" id="kbDock" role="dialog" aria-label="صفحهکلید ریاضی" aria-modal="false" hidden>
-    <div class="kb-bar">
-      <div class="kb-title">
-        <span class="kb-icon" aria-hidden="true">⌨</span>
-        <span>صفحهکلید ریاضی</span>
-        <span class="kb-target" id="kbTarget">فیلدی را انتخاب کنید</span>
-      </div>
-      <div class="kb-bar-actions">
-        <button type="button" class="kb-mini" id="kbClose" title="بستن (Esc)" aria-label="بستن صفحهکلید">✕</button>
-      </div>
-    </div>
-
-    <div class="kb-preview" aria-live="polite">
-      <span class="kb-preview-cap">پیشنمایش</span>
-      <div class="kb-preview-math" id="kbPreviewMath">—</div>
-      <div class="kb-preview-raw" id="kbPreviewRaw"></div>
-    </div>
-
-    <div class="kb-keys" id="kbKeys" aria-label="کلیدهای ریاضی">
-      <button type="button" class="kb-key" data-ins="7">7</button>
-      <button type="button" class="kb-key" data-ins="8">8</button>
-      <button type="button" class="kb-key" data-ins="9">9</button>
-      <button type="button" class="kb-key op" data-ins="/" title="تقسیم">÷</button>
-      <button type="button" class="kb-key op" data-ins="*" title="ضرب">×</button>
-      <button type="button" class="kb-key edit" data-act="end" title="انتهای خط">⇥</button>
-      <button type="button" class="kb-key edit" data-act="home" title="ابتدای خط">⇤</button>
-      <button type="button" class="kb-key edit" data-act="back" title="پاک کردن آخرین نویسه">⌫</button>
-
-      <button type="button" class="kb-key" data-ins="4">4</button>
-      <button type="button" class="kb-key" data-ins="5">5</button>
-      <button type="button" class="kb-key" data-ins="6">6</button>
-      <button type="button" class="kb-key op" data-ins="-">−</button>
-      <button type="button" class="kb-key op" data-ins="+">+</button>
-      <button type="button" class="kb-key op" data-ins="^" title="توان">^</button>
-      <button type="button" class="kb-key op" data-ins="=">=</button>
-      <button type="button" class="kb-key edit" data-act="left" title="حرکت به چپ">←</button>
-
-      <button type="button" class="kb-key" data-ins="1">1</button>
-      <button type="button" class="kb-key" data-ins="2">2</button>
-      <button type="button" class="kb-key" data-ins="3">3</button>
-      <span class="kb-prime-host">
-        <button type="button" class="kb-key var" data-ins="x" title="x — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">x</button>
-        <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق x">
-          <button type="button" data-prime-var="x" data-prime-order="1" title="مشتق مرتبهٔ ۱ x">x'</button>
-          <button type="button" data-prime-var="x" data-prime-order="2" title="مشتق مرتبهٔ ۲ x">x''</button>
-          <button type="button" data-prime-var="x" data-prime-order="3" title="مشتق مرتبهٔ ۳ x">x'''</button>
-          <button type="button" data-prime-var="x" data-prime-order="4" title="مشتق مرتبهٔ ۴ x">x''''</button>
-        </span>
-      </span>
-      <span class="kb-prime-host">
-        <button type="button" class="kb-key var" data-ins="y" title="y — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">y</button>
-        <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق y">
-          <button type="button" data-prime-var="y" data-prime-order="1" title="مشتق مرتبهٔ ۱ y">y'</button>
-          <button type="button" data-prime-var="y" data-prime-order="2" title="مشتق مرتبهٔ ۲ y">y''</button>
-          <button type="button" data-prime-var="y" data-prime-order="3" title="مشتق مرتبهٔ ۳ y">y'''</button>
-          <button type="button" data-prime-var="y" data-prime-order="4" title="مشتق مرتبهٔ ۴ y">y''''</button>
-        </span>
-      </span>
-      <button type="button" class="kb-key edit" data-act="right" title="حرکت به راست">→</button>
-      <button type="button" class="kb-key var" data-ins="pi" title="عدد پی">π</button>
-
-      <button type="button" class="kb-key" data-ins="0">0</button>
-      <button type="button" class="kb-key fn" data-ins="exp()" data-caret="-1">exp</button>
-      <button type="button" class="kb-key fn" data-ins="ln()" data-caret="-1">ln</button>
-      <button type="button" class="kb-key fn" data-ins="sqrt()" data-caret="-1">√</button>
-      <button type="button" class="kb-key fn" data-ins="sin()" data-caret="-1">sin</button>
-      <button type="button" class="kb-key fn" data-ins="cos()" data-caret="-1">cos</button>
-      <button type="button" class="kb-key fn" data-ins="tan()" data-caret="-1">tan</button>
-      <button type="button" class="kb-key var" data-ins="e" title="پایهٔ لگاریتم طبیعی">e</button>
-
-      <button type="button" class="kb-key tpl" data-tpl="power" title="توان با جایگاه بالای عبارت">xⁿ</button>
-      <button type="button" class="kb-key tpl" data-tpl="frac" title="کسر با صورت و مخرج">a/b</button>
-      <button type="button" class="kb-key tpl" data-tpl="sqrt" title="ریشه با جایگاه داخل">√□</button>
-      <button type="button" class="kb-key tpl" data-tpl="abs" title="قدر مطلق">|□|</button>
-      <button type="button" class="kb-key tpl" data-tpl="func" title="تابع با جایگاه ورودی">f( )</button>
-      <button type="button" class="kb-key tpl" data-tpl="paren" title="پرانتز">( )</button>
-      <button type="button" class="kb-key edit wide" data-act="clear" title="پاک کردن تمام فیلد">پاک</button>
-    </div>
-
-    <div class="kb-composer" id="kbComposer" hidden>
-      <div class="kb-comp-head">
-        <span id="kbCompTitle">ساختار</span>
-        <button type="button" class="kb-mini" id="kbCompClose" aria-label="بستن ساختار">✕</button>
-      </div>
-      <div class="kb-comp-body" id="kbCompBody"></div>
-      <div class="kb-comp-foot">
-        <span class="kb-comp-hint">جایگاه‌ها را با همان کیبورد پر کنید</span>
-        <button type="button" class="kb-comp-cancel" id="kbCompCancel">لغو</button>
-        <button type="button" class="kb-comp-ok" id="kbCompInsert">درج</button>
-      </div>
-    </div>
-
-    <div class="kb-foot">
-      <span class="kb-tip">روی فیلد بزنید؛ کلیدهای xⁿ، a/b و √□ جایگاه‌های تصویری باز میکنند. نیازی به کیبورد دستگاه نیست.</span>
-      <button type="button" class="kb-solve" id="kbSolve">حل گام به گام ↵</button>
-    </div>
-  </div>
 
   <button type="button" class="kb-fab" id="kbToggle" aria-label="نمایش صفحهکلید ریاضی" aria-expanded="false" title="صفحهکلید ریاضی (Alt+K)">⌨</button>
 
