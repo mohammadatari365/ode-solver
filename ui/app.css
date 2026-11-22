@@ -127,20 +127,6 @@ body {
   color: rgba(255,255,255,.9);
   max-width: 780px;
 }
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-.chip-soft {
-  font-size: 12px;
-  padding: 4px 11px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.14);
-  border: 1px solid rgba(255,255,255,.25);
-}
-
 /* ------------------------------ شبکه ------------------------------ */
 .layout {
   display: grid;
@@ -726,7 +712,7 @@ textarea { min-height: 74px; resize: vertical; font-family: var(--mono); font-si
 }
 
 /* ============================================================
-   صفحهکلید ریاضی داخلی
+   صفحه کلید ریاضی داخلی
    ============================================================ */
 body.kb-open { padding-bottom: 0; }
 
@@ -773,7 +759,7 @@ body.kb-open { padding-bottom: 0; }
 }
 .kb-mini:active { background: #e6eefb; }
 
-/* ورودی معادله و نمایش عبارت، چسبیده به صفحهکلید */
+/* ورودی معادله و نمایش عبارت، چسبیده به صفحه کلید */
 .kb-equation {
   direction: rtl;
   margin-bottom: 8px;
@@ -1071,12 +1057,7 @@ body {
   color: #fff;
   text-shadow: 0 0 14px rgba(0,240,255,.55), 2px 0 rgba(255,43,214,.38), -2px 0 rgba(0,240,255,.38);
 }
-.sub, .chips .chip-soft { color: var(--cy-dim) !important; }
-.chip-soft {
-  background: rgba(0, 240, 255, .06);
-  border-color: rgba(0, 240, 255, .28);
-  font-family: var(--tech);
-}
+.sub { color: var(--cy-dim) !important; }
 
 /* کارتها با گوشههای HUD */
 .card {
@@ -1242,7 +1223,7 @@ details.section[open] > summary::before { content: "▾"; }
 .math .paren { color: var(--neon-cyan); }
 .math-inline { color: #e9f6ff; }
 
-/* صفحهکلید */
+/* صفحه کلید */
 .kb-dock {
   background: linear-gradient(180deg, rgba(8, 12, 26, .97), rgba(16, 8, 30, .98));
   border-color: rgba(0, 240, 255, .35);
