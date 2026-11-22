@@ -797,20 +797,17 @@ body.kb-open { padding-bottom: 0; }
   background: rgba(255,255,255,.58);
   border: 1px solid #d7e2f2;
 }
-.eq-label {
-  display: block;
-  font-size: 12px; font-weight: 800;
-  color: #1b2b44; margin-bottom: 5px;
-}
-.eq-input {
-  min-height: 62px;
-  resize: vertical;
+.eq-display {
+  padding: 10px;
+  min-height: 52px;
+  outline: none;
+  cursor: text;
   font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.5;
 }
-.kb-equation .preview-label { margin-top: 7px; }
-.kb-equation .preview { padding: 9px; min-height: 48px; }
+.eq-display:focus {
+  border-style: solid;
+  box-shadow: 0 0 0 2px rgba(31,111,235,.18);
+}
 
 .kb-keys {
   display: grid;
@@ -1272,7 +1269,7 @@ details.section[open] > summary::before { content: "▾"; }
 .kb-target { background: rgba(0, 240, 255, .1); border-color: rgba(0, 240, 255, .35); color: var(--neon-lime); }
 .kb-mini { background: rgba(0, 240, 255, .07); border-color: rgba(0, 240, 255, .3); color: var(--neon-cyan); }
 .kb-equation { background: rgba(3, 8, 18, .6); border-color: rgba(0, 240, 255, .22); }
-.eq-label { color: var(--neon-cyan); }
+.eq-display:focus { box-shadow: 0 0 0 2px rgba(0,240,255,.25), inset 0 0 18px rgba(0,240,255,.08); }
 .kb-equation .preview-label { color: var(--neon-lime); }
 .kb-key {
   background: rgba(10, 18, 34, .92);
@@ -1422,10 +1419,8 @@ details.section[open] > summary::before { content: "▾"; }
           </div>
 
           <div class="kb-equation">
-            <label class="eq-label" for="rawInput">عبارت معادله</label>
-            <textarea class="math-input eq-input" dir="ltr" inputmode="none" id="rawInput" placeholder="y'' - 3*y' + 2*y = 0" spellcheck="false" autocomplete="off"></textarea>
             <div class="preview-label">نمایش عبارت معادله</div>
-            <div class="preview" id="previewBox" aria-live="polite"></div>
+            <div class="preview eq-display" id="previewBox" data-math-field="1" data-raw="" tabindex="0" role="textbox" aria-label="نمایش عبارت معادله" inputmode="none" spellcheck="false" aria-live="polite"></div>
           </div>
 
           <div class="kb-keys" id="kbKeys" aria-label="کلیدهای ریاضی">
@@ -4790,7 +4785,8 @@ var CAS = (function () {
   var YVARS = ['y', 'yp', 'ypp', 'yppp', 'ypppp'];
 
   function equationText() {
-    var t = ($('rawInput') ? $('rawInput').value : '').trim();
+    var box = $('previewBox');
+    var t = box ? (box.getAttribute('data-raw') || '').trim() : '';
     if (t.indexOf('=') < 0 && $('nonhomCheck') && $('nonhomCheck').checked) {
       var rhs = fieldVal('rhsInput');
       if (rhs) t += ' = ' + rhs;
@@ -4871,6 +4867,7 @@ var CAS = (function () {
   function updatePreview() {
     var box = $('previewBox');
     if (!box) return;
+    if (!box.hasAttribute('data-raw')) box.setAttribute('data-raw', '');
     box.innerHTML = '<div class="math">' + previewEquation() + '</div>';
   }
 
@@ -5056,7 +5053,7 @@ var CAS = (function () {
   ];
 
   function setEquation(text) {
-    $('rawInput').value = text;
+    $('previewBox').setAttribute('data-raw', text || '');
     syncEquation();
     updatePreview();
   }
@@ -5122,10 +5119,7 @@ var CAS = (function () {
       $('icBody').style.display = this.checked ? '' : 'none';
     });
 
-    $('rawInput').addEventListener('input', function () { syncEquation(); updatePreview(); });
-    $('rawInput').addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
-    });
+    $('previewBox').addEventListener('input', function () { syncEquation(); updatePreview(); });
 
     $('knownInput').addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
@@ -5137,7 +5131,7 @@ var CAS = (function () {
       state.icX0 = '0';
       state.icVals = ['', '', '', '', ''];
       state.primaryRes = null;
-      $('rawInput').value = '';
+      setEquation('');
       $('knownInput').value = '';
       $('rhsInput').value = '';
       $('nonhomCheck').checked = false;
@@ -5214,13 +5208,30 @@ var CAS = (function () {
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function isField(el) {
-    return !!(el && el.classList && el.classList.contains('math-input') && !el.disabled);
+    if (!el || el.disabled) return false;
+    return !!(el.classList && el.classList.contains('math-input')) ||
+      !!(el.getAttribute && el.getAttribute('data-math-field') === '1');
   }
   function visible(el) {
     return !!(el && !el.disabled && el.offsetParent !== null);
   }
   function allFields() {
-    return Array.prototype.slice.call(document.querySelectorAll('.math-input'));
+    return Array.prototype.slice.call(document.querySelectorAll('.math-input, [data-math-field="1"]'));
+  }
+  function fieldValue(el) {
+    if (!el) return '';
+    if (el.getAttribute && el.getAttribute('data-math-field') === '1') {
+      return el.getAttribute('data-raw') || '';
+    }
+    return String(el.value || '');
+  }
+  function setFieldValue(el, v) {
+    var text = String(v == null ? '' : v);
+    if (el.getAttribute && el.getAttribute('data-math-field') === '1') {
+      el.setAttribute('data-raw', text);
+    } else {
+      el.value = text;
+    }
   }
   function firstVisible() {
     var list = allFields();
@@ -5242,7 +5253,7 @@ var CAS = (function () {
     if (lab) return lab;
     var id = inp.id || '';
     if (id === 'rhsInput') return 'سمت راست معادله';
-    if (id === 'rawInput') return 'عبارت معادله';
+    if (id === 'previewBox') return 'نمایش عبارت معادله';
     if (id === 'ic-x0') return 'x₀';
     if (id.indexOf('ic-') === 0) {
       var j = Number(id.slice(3));
@@ -5262,7 +5273,7 @@ var CAS = (function () {
     if (!active || !document.contains(active) || !visible(active)) {
       var f = firstVisible();
       active = f;
-      selStart = selEnd = f ? f.value.length : 0;
+      selStart = selEnd = f ? fieldValue(f).length : 0;
     }
     refreshTarget();
     return active;
@@ -5288,9 +5299,10 @@ var CAS = (function () {
     if (!inp) return;
     active = inp;
     focusActive();
-    var s = clamp(selStart, 0, inp.value.length);
-    var e = clamp(selEnd, s, inp.value.length);
-    var next = inp.value.charAt(s);
+    var cur = fieldValue(inp);
+    var s = clamp(selStart, 0, cur.length);
+    var e = clamp(selEnd, s, cur.length);
+    var next = cur.charAt(s);
     var closers = [')', ']', '}', '|'];
     var operators = ['+', '-', '*', '/', '^', '=', ','];
     if (s === e && closers.indexOf(next) >= 0) {
@@ -5302,15 +5314,15 @@ var CAS = (function () {
       }
       if (operators.indexOf(text.charAt(0)) >= 0) {
         var skip = 1;
-        if (next === ')' && inp.value.charAt(s + 1) === '/' && inp.value.charAt(s + 2) === '(') skip = 3;
-        else if (next === ')' && inp.value.charAt(s + 1) === '/') skip = 2;
-        s = e = Math.min(inp.value.length, s + skip);
+        if (next === ')' && cur.charAt(s + 1) === '/' && cur.charAt(s + 2) === '(') skip = 3;
+        else if (next === ')' && cur.charAt(s + 1) === '/') skip = 2;
+        s = e = Math.min(cur.length, s + skip);
       }
     }
-    var before = inp.value.slice(0, s);
-    var after = inp.value.slice(e);
-    inp.value = before + text + after;
-    var pos = clamp(s + text.length + (caretOffset || 0), 0, inp.value.length);
+    var before = cur.slice(0, s);
+    var after = cur.slice(e);
+    setFieldValue(inp, before + text + after);
+    var pos = clamp(s + text.length + (caretOffset || 0), 0, fieldValue(inp).length);
     selStart = selEnd = pos;
     try { inp.setSelectionRange(pos, pos); } catch (_) { /* نادیده */ }
     refreshTarget();
@@ -5326,9 +5338,9 @@ var CAS = (function () {
     var inp = pickTarget();
     if (!inp) return;
     focusActive();
-    var s = clamp(selStart, 0, inp.value.length);
-    var e = clamp(selEnd, s, inp.value.length);
-    var v = inp.value;
+    var s = clamp(selStart, 0, fieldValue(inp).length);
+    var e = clamp(selEnd, s, fieldValue(inp).length);
+    var v = fieldValue(inp);
     var pos = s;
     var changed = false;
 
@@ -5360,7 +5372,7 @@ var CAS = (function () {
         break;
     }
 
-    if (changed) inp.value = v;
+    if (changed) setFieldValue(inp, v);
     selStart = selEnd = pos;
     try { inp.setSelectionRange(pos, pos); } catch (_) { /* نادیده */ }
     refreshTarget();

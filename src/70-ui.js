@@ -86,7 +86,8 @@
   var YVARS = ['y', 'yp', 'ypp', 'yppp', 'ypppp'];
 
   function equationText() {
-    var t = ($('rawInput') ? $('rawInput').value : '').trim();
+    var box = $('previewBox');
+    var t = box ? (box.getAttribute('data-raw') || '').trim() : '';
     if (t.indexOf('=') < 0 && $('nonhomCheck') && $('nonhomCheck').checked) {
       var rhs = fieldVal('rhsInput');
       if (rhs) t += ' = ' + rhs;
@@ -167,6 +168,7 @@
   function updatePreview() {
     var box = $('previewBox');
     if (!box) return;
+    if (!box.hasAttribute('data-raw')) box.setAttribute('data-raw', '');
     box.innerHTML = '<div class="math">' + previewEquation() + '</div>';
   }
 
@@ -352,7 +354,7 @@
   ];
 
   function setEquation(text) {
-    $('rawInput').value = text;
+    $('previewBox').setAttribute('data-raw', text || '');
     syncEquation();
     updatePreview();
   }
@@ -418,10 +420,7 @@
       $('icBody').style.display = this.checked ? '' : 'none';
     });
 
-    $('rawInput').addEventListener('input', function () { syncEquation(); updatePreview(); });
-    $('rawInput').addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
-    });
+    $('previewBox').addEventListener('input', function () { syncEquation(); updatePreview(); });
 
     $('knownInput').addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
@@ -433,7 +432,7 @@
       state.icX0 = '0';
       state.icVals = ['', '', '', '', ''];
       state.primaryRes = null;
-      $('rawInput').value = '';
+      setEquation('');
       $('knownInput').value = '';
       $('rhsInput').value = '';
       $('nonhomCheck').checked = false;

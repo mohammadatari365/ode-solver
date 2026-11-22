@@ -47,13 +47,30 @@
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function isField(el) {
-    return !!(el && el.classList && el.classList.contains('math-input') && !el.disabled);
+    if (!el || el.disabled) return false;
+    return !!(el.classList && el.classList.contains('math-input')) ||
+      !!(el.getAttribute && el.getAttribute('data-math-field') === '1');
   }
   function visible(el) {
     return !!(el && !el.disabled && el.offsetParent !== null);
   }
   function allFields() {
-    return Array.prototype.slice.call(document.querySelectorAll('.math-input'));
+    return Array.prototype.slice.call(document.querySelectorAll('.math-input, [data-math-field="1"]'));
+  }
+  function fieldValue(el) {
+    if (!el) return '';
+    if (el.getAttribute && el.getAttribute('data-math-field') === '1') {
+      return el.getAttribute('data-raw') || '';
+    }
+    return String(el.value || '');
+  }
+  function setFieldValue(el, v) {
+    var text = String(v == null ? '' : v);
+    if (el.getAttribute && el.getAttribute('data-math-field') === '1') {
+      el.setAttribute('data-raw', text);
+    } else {
+      el.value = text;
+    }
   }
   function firstVisible() {
     var list = allFields();
@@ -75,7 +92,7 @@
     if (lab) return lab;
     var id = inp.id || '';
     if (id === 'rhsInput') return 'سمت راست معادله';
-    if (id === 'rawInput') return 'عبارت معادله';
+    if (id === 'previewBox') return 'نمایش عبارت معادله';
     if (id === 'ic-x0') return 'x₀';
     if (id.indexOf('ic-') === 0) {
       var j = Number(id.slice(3));
@@ -95,7 +112,7 @@
     if (!active || !document.contains(active) || !visible(active)) {
       var f = firstVisible();
       active = f;
-      selStart = selEnd = f ? f.value.length : 0;
+      selStart = selEnd = f ? fieldValue(f).length : 0;
     }
     refreshTarget();
     return active;
@@ -121,9 +138,10 @@
     if (!inp) return;
     active = inp;
     focusActive();
-    var s = clamp(selStart, 0, inp.value.length);
-    var e = clamp(selEnd, s, inp.value.length);
-    var next = inp.value.charAt(s);
+    var cur = fieldValue(inp);
+    var s = clamp(selStart, 0, cur.length);
+    var e = clamp(selEnd, s, cur.length);
+    var next = cur.charAt(s);
     var closers = [')', ']', '}', '|'];
     var operators = ['+', '-', '*', '/', '^', '=', ','];
     if (s === e && closers.indexOf(next) >= 0) {
@@ -135,15 +153,15 @@
       }
       if (operators.indexOf(text.charAt(0)) >= 0) {
         var skip = 1;
-        if (next === ')' && inp.value.charAt(s + 1) === '/' && inp.value.charAt(s + 2) === '(') skip = 3;
-        else if (next === ')' && inp.value.charAt(s + 1) === '/') skip = 2;
-        s = e = Math.min(inp.value.length, s + skip);
+        if (next === ')' && cur.charAt(s + 1) === '/' && cur.charAt(s + 2) === '(') skip = 3;
+        else if (next === ')' && cur.charAt(s + 1) === '/') skip = 2;
+        s = e = Math.min(cur.length, s + skip);
       }
     }
-    var before = inp.value.slice(0, s);
-    var after = inp.value.slice(e);
-    inp.value = before + text + after;
-    var pos = clamp(s + text.length + (caretOffset || 0), 0, inp.value.length);
+    var before = cur.slice(0, s);
+    var after = cur.slice(e);
+    setFieldValue(inp, before + text + after);
+    var pos = clamp(s + text.length + (caretOffset || 0), 0, fieldValue(inp).length);
     selStart = selEnd = pos;
     try { inp.setSelectionRange(pos, pos); } catch (_) { /* نادیده */ }
     refreshTarget();
@@ -159,9 +177,9 @@
     var inp = pickTarget();
     if (!inp) return;
     focusActive();
-    var s = clamp(selStart, 0, inp.value.length);
-    var e = clamp(selEnd, s, inp.value.length);
-    var v = inp.value;
+    var s = clamp(selStart, 0, fieldValue(inp).length);
+    var e = clamp(selEnd, s, fieldValue(inp).length);
+    var v = fieldValue(inp);
     var pos = s;
     var changed = false;
 
@@ -193,7 +211,7 @@
         break;
     }
 
-    if (changed) inp.value = v;
+    if (changed) setFieldValue(inp, v);
     selStart = selEnd = pos;
     try { inp.setSelectionRange(pos, pos); } catch (_) { /* نادیده */ }
     refreshTarget();

@@ -782,20 +782,17 @@ body.kb-open { padding-bottom: 0; }
   background: rgba(255,255,255,.58);
   border: 1px solid #d7e2f2;
 }
-.eq-label {
-  display: block;
-  font-size: 12px; font-weight: 800;
-  color: #1b2b44; margin-bottom: 5px;
-}
-.eq-input {
-  min-height: 62px;
-  resize: vertical;
+.eq-display {
+  padding: 10px;
+  min-height: 52px;
+  outline: none;
+  cursor: text;
   font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.5;
 }
-.kb-equation .preview-label { margin-top: 7px; }
-.kb-equation .preview { padding: 9px; min-height: 48px; }
+.eq-display:focus {
+  border-style: solid;
+  box-shadow: 0 0 0 2px rgba(31,111,235,.18);
+}
 
 .kb-keys {
   display: grid;
@@ -1257,7 +1254,7 @@ details.section[open] > summary::before { content: "▾"; }
 .kb-target { background: rgba(0, 240, 255, .1); border-color: rgba(0, 240, 255, .35); color: var(--neon-lime); }
 .kb-mini { background: rgba(0, 240, 255, .07); border-color: rgba(0, 240, 255, .3); color: var(--neon-cyan); }
 .kb-equation { background: rgba(3, 8, 18, .6); border-color: rgba(0, 240, 255, .22); }
-.eq-label { color: var(--neon-cyan); }
+.eq-display:focus { box-shadow: 0 0 0 2px rgba(0,240,255,.25), inset 0 0 18px rgba(0,240,255,.08); }
 .kb-equation .preview-label { color: var(--neon-lime); }
 .kb-key {
   background: rgba(10, 18, 34, .92);
