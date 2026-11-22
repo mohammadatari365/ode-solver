@@ -1414,8 +1414,9 @@ details.section[open] > summary::before { content: "▾"; }
             <button type="button" class="kb-key" data-ins="2">2</button>
             <button type="button" class="kb-key" data-ins="3">3</button>
             <span class="kb-prime-host">
-              <button type="button" class="kb-key var" data-ins="x" title="x — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">x</button>
-              <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق x">
+              <button type="button" class="kb-key var" data-ins="x" title="x — با کلیک یا نگه داشتن ماوس، گزینهها را ببینید">x</button>
+              <span class="kb-prime-menu" role="group" aria-label="گزینههای x">
+                <button type="button" data-prime-var="x" data-prime-order="0" title="x ساده">x</button>
                 <button type="button" data-prime-var="x" data-prime-order="1" title="مشتق مرتبهٔ ۱ x">x'</button>
                 <button type="button" data-prime-var="x" data-prime-order="2" title="مشتق مرتبهٔ ۲ x">x''</button>
                 <button type="button" data-prime-var="x" data-prime-order="3" title="مشتق مرتبهٔ ۳ x">x'''</button>
@@ -1423,8 +1424,9 @@ details.section[open] > summary::before { content: "▾"; }
               </span>
             </span>
             <span class="kb-prime-host">
-              <button type="button" class="kb-key var" data-ins="y" title="y — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">y</button>
-              <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق y">
+              <button type="button" class="kb-key var" data-ins="y" title="y — با کلیک یا نگه داشتن ماوس، گزینهها را ببینید">y</button>
+              <span class="kb-prime-menu" role="group" aria-label="گزینههای y">
+                <button type="button" data-prime-var="y" data-prime-order="0" title="y ساده">y</button>
                 <button type="button" data-prime-var="y" data-prime-order="1" title="مشتق مرتبهٔ ۱ y">y'</button>
                 <button type="button" data-prime-var="y" data-prime-order="2" title="مشتق مرتبهٔ ۲ y">y''</button>
                 <button type="button" data-prime-var="y" data-prime-order="3" title="مشتق مرتبهٔ ۳ y">y'''</button>
@@ -5508,27 +5510,47 @@ var CAS = (function () {
     if (sb && !sb.disabled) sb.click();
   }
 
+  function closePrimeMenus() {
+    Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
+      h.classList.remove('open');
+    });
+  }
+
   keys.addEventListener('click', function (ev) {
     var b = ev.target && ev.target.closest ? ev.target.closest('button') : null;
     if (!b || !keys.contains(b)) return;
     var po = b.getAttribute('data-prime-order');
     if (po != null) {
-      var n = clamp(parseInt(po, 10) || 1, 1, 4);
+      var n = clamp(parseInt(po, 10) || 0, 0, 4);
       var v = b.getAttribute('data-prime-var') === 'x' ? 'x' : 'y';
       var marks = '';
       for (var i = 0; i < n; i++) marks += "'";
       insert(v + marks);
-      Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
-        h.classList.remove('open');
-      });
+      closePrimeMenus();
       return;
     }
     var tpl = b.getAttribute('data-tpl');
-    if (tpl) { openComposer(tpl); return; }
+    if (tpl) { closePrimeMenus(); openComposer(tpl); return; }
     var act = b.getAttribute('data-act');
-    if (act) { edit(act); return; }
+    if (act) {
+      if (act === 'clear') {
+        var disp = document.querySelector('[data-math-field="1"]');
+        if (disp) { active = disp; selStart = selEnd = 0; }
+      }
+      closePrimeMenus();
+      edit(act);
+      return;
+    }
     var text = b.getAttribute('data-ins');
     if (text == null) return;
+    var host = b.closest ? b.closest('.kb-prime-host') : null;
+    if (host && (text === 'x' || text === 'y')) {
+      var wasOpen = host.classList.contains('open');
+      closePrimeMenus();
+      if (!wasOpen) host.classList.add('open');
+      return;
+    }
+    closePrimeMenus();
     var caret = parseInt(b.getAttribute('data-caret') || '0', 10);
     insert(text, isNaN(caret) ? 0 : caret);
   });

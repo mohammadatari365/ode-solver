@@ -379,27 +379,47 @@
     if (sb && !sb.disabled) sb.click();
   }
 
+  function closePrimeMenus() {
+    Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
+      h.classList.remove('open');
+    });
+  }
+
   keys.addEventListener('click', function (ev) {
     var b = ev.target && ev.target.closest ? ev.target.closest('button') : null;
     if (!b || !keys.contains(b)) return;
     var po = b.getAttribute('data-prime-order');
     if (po != null) {
-      var n = clamp(parseInt(po, 10) || 1, 1, 4);
+      var n = clamp(parseInt(po, 10) || 0, 0, 4);
       var v = b.getAttribute('data-prime-var') === 'x' ? 'x' : 'y';
       var marks = '';
       for (var i = 0; i < n; i++) marks += "'";
       insert(v + marks);
-      Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
-        h.classList.remove('open');
-      });
+      closePrimeMenus();
       return;
     }
     var tpl = b.getAttribute('data-tpl');
-    if (tpl) { openComposer(tpl); return; }
+    if (tpl) { closePrimeMenus(); openComposer(tpl); return; }
     var act = b.getAttribute('data-act');
-    if (act) { edit(act); return; }
+    if (act) {
+      if (act === 'clear') {
+        var disp = document.querySelector('[data-math-field="1"]');
+        if (disp) { active = disp; selStart = selEnd = 0; }
+      }
+      closePrimeMenus();
+      edit(act);
+      return;
+    }
     var text = b.getAttribute('data-ins');
     if (text == null) return;
+    var host = b.closest ? b.closest('.kb-prime-host') : null;
+    if (host && (text === 'x' || text === 'y')) {
+      var wasOpen = host.classList.contains('open');
+      closePrimeMenus();
+      if (!wasOpen) host.classList.add('open');
+      return;
+    }
+    closePrimeMenus();
     var caret = parseInt(b.getAttribute('data-caret') || '0', 10);
     insert(text, isNaN(caret) ? 0 : caret);
   });
