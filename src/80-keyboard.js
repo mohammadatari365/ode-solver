@@ -500,6 +500,8 @@
     if (coarse) closeKb();
   });
 
+  /* صفحهکلید بهطور پیشفرض روی صفحه باز است */
+  openKb();
   measure();
   refreshTarget();
 })();

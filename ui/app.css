@@ -370,9 +370,16 @@ details.section > summary .badge-opt {
 
 textarea { min-height: 74px; resize: vertical; font-family: var(--mono); font-size: 14px; }
 
-/* پیش‌نمایش */
+/* پیشنمایش عبارت معادله — بالای کادر ورودی */
+.preview-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  letter-spacing: .3px;
+  margin-bottom: 7px;
+}
 .preview {
-  margin-top: 14px;
+  margin-top: 0;
   padding: 14px;
   border-radius: 14px;
   background: linear-gradient(180deg, #f8fbff, #eef4fb);
@@ -1399,7 +1406,7 @@ details.section[open] > summary::before { content: "▾"; }
   }
   .tag, .tag.ic, .tag.nonhom { background: #fff !important; color: #000 !important; border-color: #ccc !important; }
   .math, .eq-line, .step p, .step li, .field label, .label, .empty-state,
-  .answer-box .cap, .source-body, .card-head .hint { color: #000 !important; }
+  .answer-box .cap, .source-body, .card-head .hint, .preview-label { color: #000 !important; }
   .step-no, .btn-primary, .kb-solve, .kb-fab, .method-name .dot {
     background: #333 !important; color: #fff !important; box-shadow: none !important; animation: none !important;
   }
