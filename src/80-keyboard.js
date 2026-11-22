@@ -390,7 +390,7 @@
     insert(text, isNaN(caret) ? 0 : caret);
   });
 
-  /* نگه داشتن طولانی روی x / y هم منوی مشتق را باز میکند (برای لمسی) */
+  /* نگه داشتن طولانی روی x / y هم منوی مشتق را باز می کند (برای لمسی) */
   var pressTimer = null;
   keys.addEventListener('pointerdown', function (ev) {
     if (ev.pointerType === 'mouse') return;
@@ -475,8 +475,7 @@
     if (coarse) closeKb();
   });
 
-  /* صفحه کلید بهطور پیشفرض روی صفحه باز است */
-  openKb();
+  /* صفحه کلید در ابتدا بسته است؛ با دکمهٔ صفحه کلید باز می شود */
   measure();
   refreshTarget();
 })();
