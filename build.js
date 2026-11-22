@@ -21,6 +21,7 @@ const out = template
 
 const outPath = path.join(root, 'ode-solver.html');
 fs.writeFileSync(outPath, out, 'utf8');
+fs.writeFileSync(path.join(root, 'index.html'), out, 'utf8');
 
 const kb = (Buffer.byteLength(out, 'utf8') / 1024).toFixed(1);
 const external = /(https?:)?\/\/(?!www\.w3\.org)[a-z0-9.-]+\.[a-z]{2,}/gi;
