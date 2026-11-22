@@ -5,14 +5,16 @@
   'use strict';
   var CAS = window.CAS;
   var $ = function (id) { return document.getElementById(id); };
-  var PRIMES = ['', '′', '″', '‴', '⁗'];
-  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗'];
+  var PRIMES = ['', '′', '″', '‴', '⁗', '⁽⁵⁾'];
+  var YNAMES = ['y', 'y′', 'y″', 'y‴', 'y⁗', 'y⁽⁵⁾'];
   var GREET = 'سلام';
 
   var state = {
     order: 2,
+    coefVals: ['', '', '', '', '', ''],
     icX0: '0',
     icVals: ['', '', '', '', ''],
+    rawMode: false,
     primaryRes: null,
     lastCfg: null,
     busy: false
@@ -41,6 +43,57 @@
   function clearErr() { errMsg(''); }
 
   /* ------------------------------ ورودی‌ها ------------------------------ */
+  function buildOrderButtons() {
+    var wrap = $('orderRow');
+    wrap.innerHTML = '';
+    for (var n = 1; n <= 5; n++) {
+      (function (n2) {
+        var b = el('button', 'order-btn' + (n2 === state.order ? ' active' : ''), 'مرتبه ' + n2);
+        b.type = 'button';
+        b.setAttribute('data-order', String(n2));
+        b.addEventListener('click', function () {
+          state.order = n2;
+          buildOrderButtons();
+          buildCoefRows();
+          buildICFields();
+          updatePreview();
+        });
+        wrap.appendChild(b);
+      })(n);
+    }
+  }
+
+  function buildCoefRows() {
+    var wrap = $('coefList');
+    wrap.innerHTML = '';
+    for (var k = state.order; k >= 0; k--) {
+      (function (k2) {
+        var row = el('div', 'coef-row');
+        var tag = el('div', 'coef-tag', yvar(k2));
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.id = 'coef-' + k2;
+        inp.className = 'math-input';
+        inp.dir = 'ltr';
+       
+        inp.value = state.coefVals[k2] || '';
+        inp.placeholder = k2 === 0 ? 'مثلاً 2 یا 2x  (خالی = ۰)' : 'خالی = ۰';
+        inp.autocomplete = 'off';
+        inp.spellcheck = false;
+        inp.addEventListener('input', function () {
+          state.coefVals[k2] = inp.value;
+          updatePreview();
+        });
+        inp.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
+        });
+        row.appendChild(tag);
+        row.appendChild(inp);
+        wrap.appendChild(row);
+      })(k);
+    }
+  }
+
   function buildICFields() {
     var wrap = $('icFields');
     wrap.innerHTML = '';
@@ -67,6 +120,7 @@
         inp.id = 'ic-' + k2;
         inp.className = 'math-input';
         inp.dir = 'ltr';
+       
         inp.value = state.icVals[k2] || '';
         inp.placeholder = '0';
         inp.autocomplete = 'off';
@@ -81,118 +135,71 @@
     }
   }
 
-  /* ------------------------------ ورودی معادله و پیشنمایش ------------------------------ */
-  var YVARS = ['y', 'yp', 'ypp', 'yppp', 'ypppp'];
-
-  function equationText() {
-    var box = $('previewBox');
-    var t = box ? (box.getAttribute('data-raw') || '').trim() : '';
-    if (t.indexOf('=') < 0 && $('nonhomCheck') && $('nonhomCheck').checked) {
-      var rhs = fieldVal('rhsInput');
-      if (rhs) t += ' = ' + rhs;
-    }
-    return t;
-  }
-
-  function equationExpr(text) {
-    var parts = text.split('=');
-    if (parts.length > 2) throw new Error('معادله فقط باید یک علامت «=» داشته باشد.');
-    var left = CAS.parse(parts[0]);
-    var right = (parts.length === 2 && parts[1].trim()) ? CAS.parse(parts[1]) : CAS.num(0);
-    return CAS.simp(CAS.sub(left, right));
-  }
-
-  function equationOrder(expr) {
-    var n = 1;
-    for (var k = 1; k < YVARS.length; k++) if (CAS.depends(expr, YVARS[k])) n = k;
-    return n;
-  }
-
-  function decomposeHigher(expr, order) {
-    var zeroMap = {};
-    YVARS.forEach(function (v) { zeroMap[v] = CAS.num(0); });
-    var coeffs = [], rest = expr;
-    for (var k = 0; k <= order; k++) {
-      var c = CAS.simp(CAS.subs(CAS.diff(rest, YVARS[k]), zeroMap));
-      coeffs.push(c);
-      rest = CAS.simp(CAS.sub(rest, CAS.mul(c, CAS.vr(YVARS[k]))));
-    }
-    var leftover = YVARS.some(function (v) { return CAS.depends(rest, v); });
-    if (leftover) throw new Error('معادلهٔ مرتبهٔ بالا باید نسبت به y و مشتقاتش خطی باشد.');
-    return { coeffs: coeffs, rhs: CAS.simp(CAS.neg(rest)) };
-  }
-
-  function parseEquation(text) {
-    if (!text) throw new Error('عبارت معادله را وارد کنید.');
-    var expr = equationExpr(text);
-    var order = equationOrder(expr);
-    var cfg = { order: order, hasIC: false, x0: 0, y0s: [], knownExpr: null, rawExpr: null };
-    if (order <= 1) {
-      cfg.rawExpr = expr;
-      cfg.coeffs = [CAS.num(0), CAS.num(1)];
-      cfg.rhs = CAS.num(0);
-    } else {
-      var d = decomposeHigher(expr, order);
-      cfg.coeffs = d.coeffs;
-      cfg.rhs = d.rhs;
-    }
-    return cfg;
-  }
-
-  function syncEquation() {
-    try {
-      var cfg = parseEquation(equationText());
-      if (cfg.order !== state.order) {
-        state.order = cfg.order;
-        buildICFields();
-      }
-    } catch (_) { /* ورودی ناقص هنگام تایپ نادیده گرفته میشود */ }
+  /* ------------------------------ پیش‌نمایش ------------------------------ */
+  function coefTermHtml(expr) {
+    if (CAS._signOf(expr) < 0) return { neg: true, e: CAS._absTerm(expr) };
+    return { neg: false, e: expr };
   }
 
   function previewEquation() {
-    var txt = equationText();
-    if (!txt) return '<span class="op" style="color:#8b98a9">معادله را وارد کنید…</span>';
-    var parts = txt.split('=');
-    try {
-      var out = CAS.render(CAS.parse(parts[0]));
-      if (parts.length === 2 && parts[1].trim()) {
-        out += '<span class="op"> = </span>' + CAS.render(CAS.parse(parts[1]));
+    if (state.rawMode) {
+      var txt = $('rawInput').value.trim();
+      if (!txt) return '<span class="op" style="color:#8b98a9">معادله را در کادر بالا بنویسید…</span>';
+      try {
+        var ex = CAS.parse(txt);
+        return CAS.render(ex) + ' = 0';
+      } catch (e) {
+        return esc(txt);
       }
-      return out;
-    } catch (e) {
-      return esc(txt);
     }
-  }
-
-  function setDomCaret(el, pos) {
-    try {
-      var node = el.firstChild;
-      if (!node || node.nodeType !== 3) {
-        node = document.createTextNode('');
-        el.textContent = '';
-        el.appendChild(node);
+    var parts = [];
+    for (var k = state.order; k >= 0; k--) {
+      var txt2 = (state.coefVals[k] || '').trim();
+      if (!txt2) continue;
+      var expr;
+      try { expr = CAS.parse(txt2); } catch (e) { expr = null; }
+      if (!expr) {
+        var plain = esc(txt2) + (k > 0 ? '·' + YNAMES[k] : '');
+        parts.push({ neg: false, html: plain });
+        continue;
       }
-      var n = Math.max(0, Math.min(pos, node.textContent.length));
-      var range = document.createRange();
-      range.setStart(node, n);
-      range.collapse(true);
-      var sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } catch (_) { /* نادیده */ }
+      var s = coefTermHtml(expr);
+      var cHtml = CAS.render(s.e);
+      var needParen = s.e.t === '+' || s.e.t === '*';
+      var body;
+      if (CAS.isNum(s.e, 1)) {
+        body = yvar(k);
+      } else {
+        body = (needParen ? '<span class="paren">(</span>' + cHtml + '<span class="paren">)</span>' : cHtml) +
+          (s.e.t === '+' ? '' : '\u2009') + yvar(k);
+      }
+      parts.push({ neg: s.neg, html: body });
+    }
+    if (!parts.length) return '<span class="op" style="color:#8b98a9">ضرایب را وارد کنید…</span>';
+    var out = '';
+    parts.forEach(function (p, i) {
+      if (i === 0) out += (p.neg ? '−' : '') + p.html;
+      else out += (p.neg ? ' − ' : ' + ') + p.html;
+    });
+    var rhsTxt = '';
+    if ($('nonhomCheck').checked) {
+      rhsTxt = $('rhsInput').value.trim();
+    }
+    if (rhsTxt) {
+      try {
+        out += ' = ' + CAS.render(CAS.parse(rhsTxt));
+      } catch (e2) {
+        out += ' = ' + esc(rhsTxt);
+      }
+    } else {
+      out += ' = 0';
+    }
+    return out;
   }
 
   function updatePreview() {
     var box = $('previewBox');
     if (!box) return;
-    if (!box.hasAttribute('data-raw')) box.setAttribute('data-raw', '');
-    if (document.activeElement === box) {
-      var raw = box.getAttribute('data-raw') || '';
-      if (box.textContent !== raw) box.textContent = raw;
-      var caret = parseInt(box.getAttribute('data-caret') || '-1', 10);
-      if (caret >= 0) setDomCaret(box, caret);
-      return;
-    }
     box.innerHTML = '<div class="math">' + previewEquation() + '</div>';
   }
 
@@ -208,7 +215,27 @@
   }
 
   function buildCfg() {
-    var cfg = parseEquation(equationText());
+    var cfg = { hasIC: false, x0: 0, y0s: [], knownExpr: null, rawExpr: null };
+    if (state.rawMode) {
+      var raw = $('rawInput').value.trim();
+      if (!raw) throw new Error('در حالت معادلهٔ کامل، عبارت معادله را وارد کنید.');
+      cfg.order = 1;
+      cfg.rawExpr = parseOr(raw, 'معادله');
+      cfg.coeffs = [CAS.num(0), CAS.num(1)];
+      cfg.rhs = CAS.num(0);
+    } else {
+      cfg.order = state.order;
+      cfg.coeffs = [];
+      var any = false;
+      for (var k = 0; k <= state.order; k++) {
+        var t = (state.coefVals[k] || '').trim();
+        if (t) any = true;
+        cfg.coeffs.push(parseOr(t, 'ضریب ' + YNAMES[k]));
+      }
+      if (!any) throw new Error('حداقل یکی از ضرایب را وارد کنید (مثلاً ضریب y یا y′).');
+      var nonhom = $('nonhomCheck').checked;
+      cfg.rhs = nonhom ? parseOr(fieldVal('rhsInput'), 'سمت راست معادله') : CAS.num(0);
+    }
 
     var icOn = $('icCheck').checked;
     if (icOn) {
@@ -361,25 +388,120 @@
     });
   }
 
-  /* ------------------------------ مثالها ------------------------------ */
+  /* ------------------------------ مثال‌ها ------------------------------ */
   var EXAMPLES = [
-    { label: 'خطی: y′ + 2y = e⁻ˣ', eq: "y' + 2*y = exp(-x)" },
-    { label: 'برنولی: y′ + y = x y²', eq: "y' + y = x*y^2" },
-    { label: 'تفکیکپذیر: y′ = x y', eq: "y' = x*y" },
-    { label: 'همگن: y′ = (x+y)/x', eq: "y' = (x+y)/x" },
-    { label: 'کامل: (2x+y) + (x+2y)y′ = 0', eq: "(2*x+y) + (x+2*y)*y' = 0" },
-    { label: 'ریکاتی: y′ = y² − 1', eq: "y' = y^2 - 1", known: '1' },
-    { label: 'کلرو: y = x y′ + y′²', eq: "y = x*y' + y'^2" },
-    { label: 'کوشی‑اویلر: x²y″ − 2x y′ + 2y = 0', eq: "x^2*y'' - 2*x*y' + 2*y = 0" },
-    { label: 'ناهمگن: y″ − y = e²ˣ', eq: "y'' - y = exp(2*x)" },
-    { label: 'مرتبه ۴: y⁗ − 5y″ + 4y = 0', eq: "y'''' - 5*y'' + 4*y = 0" },
-    { label: 'کاهش مرتبه: y″ − y′/x = 0', eq: "y'' - y'/x = 0", known: '1' },
-    { label: 'مقدار اولیه: y″ − 3y′ + 2y = 0', eq: "y'' - 3*y' + 2*y = 0", ic: ['1', '0'] }
+    {
+      label: 'خطی: y′ + 2y = e⁻ˣ',
+      set: function () {
+        setOrder(1); setCoefs({ 0: '2', 1: '1' }); nonhom(true, 'exp(-x)');
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'برنولی: y′ + y = x y²',
+      set: function () {
+        setOrder(1); setCoefs({ 0: '1', 1: '1' }); nonhom(true, 'x*y^2');
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'تفکیک‌پذیر: y′ = x y',
+      set: function () {
+        setOrder(1); setCoefs({ 1: '1' }); nonhom(true, 'x*y');
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'همگن: y′ = (x+y)/x',
+      set: function () {
+        setOrder(1); setCoefs({ 1: '1' }); nonhom(true, '(x+y)/x');
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'کامل: (2x+y) + (x+2y)y′ = 0',
+      set: function () {
+        setOrder(1); raw(true, '(2*x+y) + (x+2*y)*y\'');
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'ریکاتی: y′ = y² − 1',
+      set: function () {
+        setOrder(1); setCoefs({ 1: '1' }); nonhom(true, 'y^2 - 1');
+        known('1'); ic(false);
+      }
+    },
+    {
+      label: 'کلرو: y = x y′ + y′²',
+      set: function () {
+        setOrder(1); raw(true, 'y = x*y\' + y\'^2');
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'کوشی‑اویلر: x²y″ − 2x y′ + 2y = 0',
+      set: function () {
+        setOrder(2); setCoefs({ 0: '2', 1: '-2*x', 2: 'x^2' }); nonhom(false);
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'ناهمگن: y″ − y = e²ˣ',
+      set: function () {
+        setOrder(2); setCoefs({ 0: '-1', 2: '1' }); nonhom(true, 'exp(2*x)');
+        known(''); ic(false);
+      }
+    },
+    {
+      label: 'مرتبه ۴: y⁗ − 5y″ + 4y = 0',
+      set: function () {
+        setOrder(4); setCoefs({ 0: '4', 2: '-5', 4: '1' });
+        nonhom(false); known(''); ic(false);
+      }
+    },
+    {
+      label: 'کاهش مرتبه: y″ − y′/x = 0',
+      set: function () {
+        setOrder(2); setCoefs({ 1: '-1/x', 2: '1' }); nonhom(false);
+        known('1'); ic(false);
+      }
+    },
+    {
+      label: 'مقدار اولیه: y″ − 3y′ + 2y = 0',
+      set: function () {
+        setOrder(2); setCoefs({ 0: '2', 1: '-3', 2: '1' }); nonhom(false);
+        known(''); ic(true, 0, ['1', '0']);
+      }
+    }
   ];
 
-  function setEquation(text) {
-    $('previewBox').setAttribute('data-raw', text || '');
-    syncEquation();
+  function setOrder(n) {
+    state.order = n;
+    buildOrderButtons();
+    buildCoefRows();
+    buildICFields();
+  }
+  function setCoefs(obj) {
+    state.coefVals = ['', '', '', '', '', ''];
+    Object.keys(obj).forEach(function (k) { state.coefVals[Number(k)] = obj[k]; });
+    buildCoefRows();
+    updatePreview();
+  }
+  function nonhom(on, rhs) {
+    $('nonhomCheck').checked = !!on;
+    $('rhsField').style.display = on ? '' : 'none';
+    if (rhs != null) $('rhsInput').value = rhs;
+    updatePreview();
+  }
+  function raw(on, text) {
+    state.rawMode = !!on;
+    $('rawCheck').checked = !!on;
+    $('rawField').style.display = on ? '' : 'none';
+    $('coefArea').style.display = on ? 'none' : '';
+    $('rhsRow').style.display = on ? 'none' : '';
+    if (on && state.order !== 1) setOrder(1);
+    if (text != null) $('rawInput').value = text;
     updatePreview();
   }
   function known(v) { $('knownInput').value = v || ''; }
@@ -408,11 +530,7 @@
       b.type = 'button';
       b.addEventListener('click', function () {
         clearErr();
-        try {
-          setEquation(ex.eq || '');
-          known(ex.known || '');
-          ic(!!ex.ic, 0, ex.ic || null);
-        } catch (e) { /* ignore */ }
+        try { raw(false, ''); ex.set(); } catch (e) { /* ignore */ }
         $('icBody').style.display = $('icCheck').checked ? '' : 'none';
         updatePreview();
         solve();
@@ -423,19 +541,19 @@
 
   /* ------------------------------ شروع ------------------------------ */
   function init() {
+    buildOrderButtons();
+    buildCoefRows();
     buildICFields();
     buildExamples();
-    syncEquation();
     updatePreview();
     renderEmpty();
 
     $('nonhomCheck').addEventListener('change', function () {
       $('rhsField').style.display = this.checked ? '' : 'none';
       if (this.checked) { $('rhsInput').focus(); }
-      syncEquation();
       updatePreview();
     });
-    $('rhsInput').addEventListener('input', function () { syncEquation(); updatePreview(); });
+    $('rhsInput').addEventListener('input', updatePreview);
     $('rhsInput').addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
     });
@@ -444,37 +562,16 @@
       $('icBody').style.display = this.checked ? '' : 'none';
     });
 
-    var display = $('previewBox');
-    display.addEventListener('focus', function () {
-      var raw = this.getAttribute('data-raw') || '';
-      this.removeAttribute('data-caret');
-      this.textContent = raw;
-      setDomCaret(this, raw.length);
-    });
-    display.addEventListener('input', function (ev) {
-      if (ev.isTrusted) {
-        this.removeAttribute('data-caret');
-        this.setAttribute('data-raw', this.textContent.replace(/\u00a0/g, ' '));
-      }
-      syncEquation();
+    $('rawCheck').addEventListener('change', function () {
+      state.rawMode = this.checked;
+      $('rawField').style.display = this.checked ? '' : 'none';
+      $('coefArea').style.display = this.checked ? 'none' : '';
+      $('rhsRow').style.display = this.checked ? 'none' : '';
+      if (this.checked && state.order !== 1) setOrder(1);
       updatePreview();
+      if (this.checked) $('rawInput').focus();
     });
-    display.addEventListener('blur', function () {
-      this.removeAttribute('data-caret');
-      syncEquation();
-      updatePreview();
-    });
-    display.addEventListener('paste', function (ev) {
-      ev.preventDefault();
-      var text = (ev.clipboardData || window.clipboardData).getData('text') || '';
-      document.execCommand('insertText', false, text);
-    });
-    display.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) {
-        ev.preventDefault();
-        solve();
-      }
-    });
+    $('rawInput').addEventListener('input', updatePreview);
 
     $('knownInput').addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
@@ -483,18 +580,25 @@
     $('solveBtn').addEventListener('click', solve);
     $('resetBtn').addEventListener('click', function () {
       state.order = 2;
+      state.coefVals = ['', '', '', '', '', ''];
       state.icX0 = '0';
       state.icVals = ['', '', '', '', ''];
+      state.rawMode = false;
       state.primaryRes = null;
-      setEquation('');
+      $('rawCheck').checked = false;
+      $('rawField').style.display = 'none';
+      $('coefArea').style.display = '';
+      $('rhsRow').style.display = '';
+      $('rawInput').value = '';
       $('knownInput').value = '';
       $('rhsInput').value = '';
       $('nonhomCheck').checked = false;
       $('rhsField').style.display = 'none';
       $('icCheck').checked = false;
       $('icBody').style.display = 'none';
+      buildOrderButtons();
+      buildCoefRows();
       buildICFields();
-      syncEquation();
       clearErr();
       updatePreview();
       renderEmpty();
@@ -504,7 +608,7 @@
     var fav = document.getElementById('favicon');
     if (fav) {
       fav.href = 'data:image/svg+xml,' + encodeURIComponent(
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f6feb"/><text x="32" y="39" font-size="22" text-anchor="middle" fill="#fff" font-family="monospace">pgu</text></svg>');
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1f6feb"/><text x="32" y="45" font-size="22" text-anchor="middle" fill="#fff" font-family="monospace">pgu</text></svg>');
     }
   }
 

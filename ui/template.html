@@ -41,6 +41,15 @@
       </div>
       <div class="card-body">
 
+        <div class="preview-label">نمایش عبارت معادله</div>
+        <div class="preview" id="previewBox" aria-live="polite"></div>
+
+        <div class="order-row" id="orderRow" role="group" aria-label="انتخاب مرتبه"></div>
+
+        <div id="coefArea">
+          <div class="coef-list" id="coefList"></div>
+        </div>
+
         <!-- ------------------------------ صفحه کلید داخلی ------------------------------ -->
         <div class="kb-dock" id="kbDock" role="dialog" aria-label="صفحه کلید ریاضی" aria-modal="false" hidden>
           <div class="kb-bar">
@@ -52,11 +61,6 @@
             <div class="kb-bar-actions">
               <button type="button" class="kb-mini" id="kbClose" title="بستن (Esc)" aria-label="بستن صفحه کلید">✕</button>
             </div>
-          </div>
-
-          <div class="kb-equation">
-            <div class="preview-label">نمایش عبارت معادله</div>
-            <div class="preview eq-display" id="previewBox" data-math-field="1" data-raw="" contenteditable="true" tabindex="0" role="textbox" aria-label="نمایش عبارت معادله" spellcheck="false" aria-live="polite"></div>
           </div>
 
           <div class="kb-keys" id="kbKeys" aria-label="کلیدهای ریاضی">
@@ -82,9 +86,8 @@
             <button type="button" class="kb-key" data-ins="2">2</button>
             <button type="button" class="kb-key" data-ins="3">3</button>
             <span class="kb-prime-host">
-              <button type="button" class="kb-key var" data-ins="x" title="x — با کلیک یا نگه داشتن ماوس، گزینهها را ببینید">x</button>
-              <span class="kb-prime-menu" role="group" aria-label="گزینههای x">
-                <button type="button" data-prime-var="x" data-prime-order="0" title="x ساده">x</button>
+              <button type="button" class="kb-key var" data-ins="x" title="x — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">x</button>
+              <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق x">
                 <button type="button" data-prime-var="x" data-prime-order="1" title="مشتق مرتبهٔ ۱ x">x'</button>
                 <button type="button" data-prime-var="x" data-prime-order="2" title="مشتق مرتبهٔ ۲ x">x''</button>
                 <button type="button" data-prime-var="x" data-prime-order="3" title="مشتق مرتبهٔ ۳ x">x'''</button>
@@ -92,9 +95,8 @@
               </span>
             </span>
             <span class="kb-prime-host">
-              <button type="button" class="kb-key var" data-ins="y" title="y — با کلیک یا نگه داشتن ماوس، گزینهها را ببینید">y</button>
-              <span class="kb-prime-menu" role="group" aria-label="گزینههای y">
-                <button type="button" data-prime-var="y" data-prime-order="0" title="y ساده">y</button>
+              <button type="button" class="kb-key var" data-ins="y" title="y — ماوس را روی کلید نگه دارید تا مرتبهٔ مشتق انتخاب شود">y</button>
+              <span class="kb-prime-menu" role="group" aria-label="مرتبهٔ مشتق y">
                 <button type="button" data-prime-var="y" data-prime-order="1" title="مشتق مرتبهٔ ۱ y">y'</button>
                 <button type="button" data-prime-var="y" data-prime-order="2" title="مشتق مرتبهٔ ۲ y">y''</button>
                 <button type="button" data-prime-var="y" data-prime-order="3" title="مشتق مرتبهٔ ۳ y">y'''</button>
@@ -156,7 +158,25 @@
           </div>
         </div>
 
-                <details class="section">
+        <details class="section">
+          <summary>حالت پیشرفته: نوشتن معادلهٔ کامل <span class="badge-opt">اختیاری</span></summary>
+          <div class="inner">
+            <label class="switch-row" for="rawCheck">
+              <input type="checkbox" id="rawCheck">
+              <span class="switch" aria-hidden="true"></span>
+              <span>
+                <span class="sw-label">معادله را به شکل کامل می‌نویسم</span><br>
+                <span class="sw-hint">مناسب معادله‌های ضمنی، کامل (Exact) و کلرو</span>
+              </span>
+            </label>
+            <div class="field" id="rawField" style="display:none">
+              <label>معادلهٔ کامل <span class="sub">(مشتق اول را با y' بنویسید؛ مرتبهٔ اول)</span></label>
+              <textarea class="math-input" dir="ltr" id="rawInput" placeholder="(2*x+y) + (x+2*y)*y' = 0" spellcheck="false"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
           <summary>شرایط اولیه (محاسبهٔ C₁, C₂, …) <span class="badge-opt">اختیاری</span></summary>
           <div class="inner">
             <label class="switch-row" for="icCheck">

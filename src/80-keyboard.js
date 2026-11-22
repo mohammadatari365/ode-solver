@@ -47,30 +47,13 @@
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function isField(el) {
-    if (!el || el.disabled) return false;
-    return !!(el.classList && el.classList.contains('math-input')) ||
-      !!(el.getAttribute && el.getAttribute('data-math-field') === '1');
+    return !!(el && el.classList && el.classList.contains('math-input') && !el.disabled);
   }
   function visible(el) {
     return !!(el && !el.disabled && el.offsetParent !== null);
   }
   function allFields() {
-    return Array.prototype.slice.call(document.querySelectorAll('.math-input, [data-math-field="1"]'));
-  }
-  function fieldValue(el) {
-    if (!el) return '';
-    if (el.getAttribute && el.getAttribute('data-math-field') === '1') {
-      return el.getAttribute('data-raw') || '';
-    }
-    return String(el.value || '');
-  }
-  function setFieldValue(el, v) {
-    var text = String(v == null ? '' : v);
-    if (el.getAttribute && el.getAttribute('data-math-field') === '1') {
-      el.setAttribute('data-raw', text);
-    } else {
-      el.value = text;
-    }
+    return Array.prototype.slice.call(document.querySelectorAll('.math-input'));
   }
   function firstVisible() {
     var list = allFields();
@@ -79,50 +62,24 @@
   }
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 
-  function domCaret(el) {
-    var sel = window.getSelection();
-    if (!sel || !sel.rangeCount) return fieldValue(el).length;
-    var r = sel.getRangeAt(0);
-    if (!el.contains || !el.contains(r.endContainer)) return fieldValue(el).length;
-    var pre = r.cloneRange();
-    pre.selectNodeContents(el);
-    pre.setEnd(r.endContainer, r.endOffset);
-    return pre.toString().length;
-  }
-
-  function setDomCaret(el, pos) {
-    try {
-      var node = el.firstChild;
-      if (!node || node.nodeType !== 3) {
-        el.textContent = '';
-        node = document.createTextNode('');
-        el.appendChild(node);
-      }
-      var n = clamp(pos, 0, node.textContent.length);
-      var range = document.createRange();
-      range.setStart(node, n);
-      range.collapse(true);
-      var sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    } catch (_) { /* نادیده */ }
-  }
-
   function saveSel() {
     if (!active) return;
     try {
       var s = active.selectionStart, e = active.selectionEnd;
       if (typeof s === 'number' && typeof e === 'number') { selStart = s; selEnd = e; }
-      else { selStart = selEnd = domCaret(active); }
-    } catch (_) { selStart = selEnd = domCaret(active); }
+    } catch (_) { /* برخی مرورگرها روی برخی فیلدها محدودیت دارند */ }
   }
 
   function labelFor(inp) {
     var lab = inp.getAttribute && inp.getAttribute('data-label');
     if (lab) return lab;
     var id = inp.id || '';
+    if (id.indexOf('coef-') === 0) {
+      var k = Number(id.slice(5));
+      return 'ضریب ' + (YNAMES[k] || ('y(' + k + ')'));
+    }
     if (id === 'rhsInput') return 'سمت راست معادله';
-    if (id === 'previewBox') return 'نمایش عبارت معادله';
+    if (id === 'rawInput') return 'معادلهٔ کامل';
     if (id === 'ic-x0') return 'x₀';
     if (id.indexOf('ic-') === 0) {
       var j = Number(id.slice(3));
@@ -142,7 +99,7 @@
     if (!active || !document.contains(active) || !visible(active)) {
       var f = firstVisible();
       active = f;
-      selStart = selEnd = f ? fieldValue(f).length : 0;
+      selStart = selEnd = f ? f.value.length : 0;
     }
     refreshTarget();
     return active;
@@ -151,19 +108,10 @@
   function focusActive() {
     if (!active) return;
     try { active.focus({ preventScroll: true }); } catch (_) { active.focus(); }
-    try {
-      if (typeof active.setSelectionRange === 'function') active.setSelectionRange(selStart, selEnd);
-      else {
-        var saved = parseInt(active.getAttribute('data-caret') || '-1', 10);
-        setDomCaret(active, saved >= 0 ? saved : selStart);
-      }
-    } catch (_) { /* نادیده */ }
+    try { active.setSelectionRange(selStart, selEnd); } catch (_) { /* نادیده */ }
   }
 
   function fireInput(inp) {
-    if (inp && inp.getAttribute && inp.getAttribute('data-math-field') === '1') {
-      inp.setAttribute('data-caret', String(selStart));
-    }
     try {
       inp.dispatchEvent(new Event('input', { bubbles: true }));
     } catch (_) {
@@ -177,10 +125,9 @@
     if (!inp) return;
     active = inp;
     focusActive();
-    var cur = fieldValue(inp);
-    var s = clamp(selStart, 0, cur.length);
-    var e = clamp(selEnd, s, cur.length);
-    var next = cur.charAt(s);
+    var s = clamp(selStart, 0, inp.value.length);
+    var e = clamp(selEnd, s, inp.value.length);
+    var next = inp.value.charAt(s);
     var closers = [')', ']', '}', '|'];
     var operators = ['+', '-', '*', '/', '^', '=', ','];
     if (s === e && closers.indexOf(next) >= 0) {
@@ -192,15 +139,15 @@
       }
       if (operators.indexOf(text.charAt(0)) >= 0) {
         var skip = 1;
-        if (next === ')' && cur.charAt(s + 1) === '/' && cur.charAt(s + 2) === '(') skip = 3;
-        else if (next === ')' && cur.charAt(s + 1) === '/') skip = 2;
-        s = e = Math.min(cur.length, s + skip);
+        if (next === ')' && inp.value.charAt(s + 1) === '/' && inp.value.charAt(s + 2) === '(') skip = 3;
+        else if (next === ')' && inp.value.charAt(s + 1) === '/') skip = 2;
+        s = e = Math.min(inp.value.length, s + skip);
       }
     }
-    var before = cur.slice(0, s);
-    var after = cur.slice(e);
-    setFieldValue(inp, before + text + after);
-    var pos = clamp(s + text.length + (caretOffset || 0), 0, fieldValue(inp).length);
+    var before = inp.value.slice(0, s);
+    var after = inp.value.slice(e);
+    inp.value = before + text + after;
+    var pos = clamp(s + text.length + (caretOffset || 0), 0, inp.value.length);
     selStart = selEnd = pos;
     try { inp.setSelectionRange(pos, pos); } catch (_) { /* نادیده */ }
     refreshTarget();
@@ -216,9 +163,9 @@
     var inp = pickTarget();
     if (!inp) return;
     focusActive();
-    var s = clamp(selStart, 0, fieldValue(inp).length);
-    var e = clamp(selEnd, s, fieldValue(inp).length);
-    var v = fieldValue(inp);
+    var s = clamp(selStart, 0, inp.value.length);
+    var e = clamp(selEnd, s, inp.value.length);
+    var v = inp.value;
     var pos = s;
     var changed = false;
 
@@ -250,7 +197,7 @@
         break;
     }
 
-    if (changed) setFieldValue(inp, v);
+    if (changed) inp.value = v;
     selStart = selEnd = pos;
     try { inp.setSelectionRange(pos, pos); } catch (_) { /* نادیده */ }
     refreshTarget();
@@ -418,47 +365,27 @@
     if (sb && !sb.disabled) sb.click();
   }
 
-  function closePrimeMenus() {
-    Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
-      h.classList.remove('open');
-    });
-  }
-
   keys.addEventListener('click', function (ev) {
     var b = ev.target && ev.target.closest ? ev.target.closest('button') : null;
     if (!b || !keys.contains(b)) return;
     var po = b.getAttribute('data-prime-order');
     if (po != null) {
-      var n = clamp(parseInt(po, 10) || 0, 0, 4);
+      var n = clamp(parseInt(po, 10) || 1, 1, 4);
       var v = b.getAttribute('data-prime-var') === 'x' ? 'x' : 'y';
       var marks = '';
       for (var i = 0; i < n; i++) marks += "'";
       insert(v + marks);
-      closePrimeMenus();
+      Array.prototype.forEach.call(keys.querySelectorAll('.kb-prime-host.open'), function (h) {
+        h.classList.remove('open');
+      });
       return;
     }
     var tpl = b.getAttribute('data-tpl');
-    if (tpl) { closePrimeMenus(); openComposer(tpl); return; }
+    if (tpl) { openComposer(tpl); return; }
     var act = b.getAttribute('data-act');
-    if (act) {
-      if (act === 'clear') {
-        var disp = document.querySelector('[data-math-field="1"]');
-        if (disp) { active = disp; selStart = selEnd = 0; }
-      }
-      closePrimeMenus();
-      edit(act);
-      return;
-    }
+    if (act) { edit(act); return; }
     var text = b.getAttribute('data-ins');
     if (text == null) return;
-    var host = b.closest ? b.closest('.kb-prime-host') : null;
-    if (host && (text === 'x' || text === 'y')) {
-      var wasOpen = host.classList.contains('open');
-      closePrimeMenus();
-      if (!wasOpen) host.classList.add('open');
-      return;
-    }
-    closePrimeMenus();
     var caret = parseInt(b.getAttribute('data-caret') || '0', 10);
     insert(text, isNaN(caret) ? 0 : caret);
   });
