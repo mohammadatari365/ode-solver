@@ -79,12 +79,42 @@
   }
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 
+  function domCaret(el) {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return fieldValue(el).length;
+    var r = sel.getRangeAt(0);
+    if (!el.contains || !el.contains(r.endContainer)) return fieldValue(el).length;
+    var pre = r.cloneRange();
+    pre.selectNodeContents(el);
+    pre.setEnd(r.endContainer, r.endOffset);
+    return pre.toString().length;
+  }
+
+  function setDomCaret(el, pos) {
+    try {
+      var node = el.firstChild;
+      if (!node || node.nodeType !== 3) {
+        el.textContent = '';
+        node = document.createTextNode('');
+        el.appendChild(node);
+      }
+      var n = clamp(pos, 0, node.textContent.length);
+      var range = document.createRange();
+      range.setStart(node, n);
+      range.collapse(true);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (_) { /* نادیده */ }
+  }
+
   function saveSel() {
     if (!active) return;
     try {
       var s = active.selectionStart, e = active.selectionEnd;
       if (typeof s === 'number' && typeof e === 'number') { selStart = s; selEnd = e; }
-    } catch (_) { /* برخی مرورگرها روی برخی فیلدها محدودیت دارند */ }
+      else { selStart = selEnd = domCaret(active); }
+    } catch (_) { selStart = selEnd = domCaret(active); }
   }
 
   function labelFor(inp) {
@@ -121,10 +151,19 @@
   function focusActive() {
     if (!active) return;
     try { active.focus({ preventScroll: true }); } catch (_) { active.focus(); }
-    try { active.setSelectionRange(selStart, selEnd); } catch (_) { /* نادیده */ }
+    try {
+      if (typeof active.setSelectionRange === 'function') active.setSelectionRange(selStart, selEnd);
+      else {
+        var saved = parseInt(active.getAttribute('data-caret') || '-1', 10);
+        setDomCaret(active, saved >= 0 ? saved : selStart);
+      }
+    } catch (_) { /* نادیده */ }
   }
 
   function fireInput(inp) {
+    if (inp && inp.getAttribute && inp.getAttribute('data-math-field') === '1') {
+      inp.setAttribute('data-caret', String(selStart));
+    }
     try {
       inp.dispatchEvent(new Event('input', { bubbles: true }));
     } catch (_) {
@@ -222,7 +261,7 @@
   function slot(slotName, label, value, cls) {
     return '<input type="text" class="math-input tpl-slot ' + (cls || '') + '" ' +
       'data-slot="' + slotName + '" data-label="' + esc(label) + '" ' +
-      'dir="ltr" inputmode="none" spellcheck="false" value="' + esc(value) + '" placeholder="' + esc(label) + '">';
+      'dir="ltr" spellcheck="false" value="' + esc(value) + '" placeholder="' + esc(label) + '">';
   }
 
   function templateHtml(type) {

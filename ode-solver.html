@@ -790,6 +790,8 @@ body.kb-open { padding-bottom: 0; }
   outline: none;
   cursor: text;
   font-family: var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .eq-display:focus {
   border-style: solid;
@@ -1388,7 +1390,7 @@ details.section[open] > summary::before { content: "▾"; }
 
           <div class="kb-equation">
             <div class="preview-label">نمایش عبارت معادله</div>
-            <div class="preview eq-display" id="previewBox" data-math-field="1" data-raw="" tabindex="0" role="textbox" aria-label="نمایش عبارت معادله" inputmode="none" spellcheck="false" aria-live="polite"></div>
+            <div class="preview eq-display" id="previewBox" data-math-field="1" data-raw="" contenteditable="true" tabindex="0" role="textbox" aria-label="نمایش عبارت معادله" spellcheck="false" aria-live="polite"></div>
           </div>
 
           <div class="kb-keys" id="kbKeys" aria-label="کلیدهای ریاضی">
@@ -1484,7 +1486,7 @@ details.section[open] > summary::before { content: "▾"; }
           </label>
           <div class="field" id="rhsField" style="display:none">
             <label>سمت راست معادله <span class="math-inline"><i>f</i>(<i>x</i>,<i>y</i>)</span></label>
-            <input type="text" class="math-input" dir="ltr" inputmode="none" id="rhsInput" placeholder="exp(2*x)  یا  x*y^2  یا  sin(x)" autocomplete="off" spellcheck="false">
+            <input type="text" class="math-input" dir="ltr" id="rhsInput" placeholder="exp(2*x)  یا  x*y^2  یا  sin(x)" autocomplete="off" spellcheck="false">
           </div>
         </div>
 
@@ -1510,7 +1512,7 @@ details.section[open] > summary::before { content: "▾"; }
           <div class="inner">
             <div class="field">
               <label>جواب خصوصی یا ریشهٔ معلوم</label>
-              <input type="text" class="math-input" dir="ltr" inputmode="none" id="knownInput" placeholder="مثلاً  1   یا   exp(x)" autocomplete="off" spellcheck="false">
+              <input type="text" class="math-input" dir="ltr" id="knownInput" placeholder="مثلاً  1   یا   exp(x)" autocomplete="off" spellcheck="false">
               <div class="sub">
                 برای ریکاتی: یک جواب خصوصی معادله؛ برای کاهش مرتبه: جواب <span class="math-inline"><i>y</i><sub>1</sub></span>؛
                 برای معادله‌های با ضرایب ثابت: یکی از ریشه‌های معادلهٔ مشخصه.
@@ -4718,7 +4720,7 @@ var CAS = (function () {
     f1.innerHTML = '<label>نقطهٔ شروع <span class="math-inline"><i>x</i><sub>0</sub></span></label>';
     var i1 = document.createElement('input');
     i1.type = 'text'; i1.id = 'ic-x0'; i1.value = state.icX0;
-    i1.className = 'math-input'; i1.dir = 'ltr'; i1.inputMode = 'none';
+    i1.className = 'math-input'; i1.dir = 'ltr';
     i1.placeholder = '0'; i1.autocomplete = 'off'; i1.spellcheck = false;
     i1.addEventListener('input', function () { state.icX0 = i1.value; });
     i1.addEventListener('keydown', function (ev) {
@@ -4736,7 +4738,6 @@ var CAS = (function () {
         inp.id = 'ic-' + k2;
         inp.className = 'math-input';
         inp.dir = 'ltr';
-        inp.inputMode = 'none';
         inp.value = state.icVals[k2] || '';
         inp.placeholder = '0';
         inp.autocomplete = 'off';
@@ -4834,10 +4835,35 @@ var CAS = (function () {
     }
   }
 
+  function setDomCaret(el, pos) {
+    try {
+      var node = el.firstChild;
+      if (!node || node.nodeType !== 3) {
+        node = document.createTextNode('');
+        el.textContent = '';
+        el.appendChild(node);
+      }
+      var n = Math.max(0, Math.min(pos, node.textContent.length));
+      var range = document.createRange();
+      range.setStart(node, n);
+      range.collapse(true);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (_) { /* نادیده */ }
+  }
+
   function updatePreview() {
     var box = $('previewBox');
     if (!box) return;
     if (!box.hasAttribute('data-raw')) box.setAttribute('data-raw', '');
+    if (document.activeElement === box) {
+      var raw = box.getAttribute('data-raw') || '';
+      if (box.textContent !== raw) box.textContent = raw;
+      var caret = parseInt(box.getAttribute('data-caret') || '-1', 10);
+      if (caret >= 0) setDomCaret(box, caret);
+      return;
+    }
     box.innerHTML = '<div class="math">' + previewEquation() + '</div>';
   }
 
@@ -5089,7 +5115,37 @@ var CAS = (function () {
       $('icBody').style.display = this.checked ? '' : 'none';
     });
 
-    $('previewBox').addEventListener('input', function () { syncEquation(); updatePreview(); });
+    var display = $('previewBox');
+    display.addEventListener('focus', function () {
+      var raw = this.getAttribute('data-raw') || '';
+      this.removeAttribute('data-caret');
+      this.textContent = raw;
+      setDomCaret(this, raw.length);
+    });
+    display.addEventListener('input', function (ev) {
+      if (ev.isTrusted) {
+        this.removeAttribute('data-caret');
+        this.setAttribute('data-raw', this.textContent.replace(/\u00a0/g, ' '));
+      }
+      syncEquation();
+      updatePreview();
+    });
+    display.addEventListener('blur', function () {
+      this.removeAttribute('data-caret');
+      syncEquation();
+      updatePreview();
+    });
+    display.addEventListener('paste', function (ev) {
+      ev.preventDefault();
+      var text = (ev.clipboardData || window.clipboardData).getData('text') || '';
+      document.execCommand('insertText', false, text);
+    });
+    display.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) {
+        ev.preventDefault();
+        solve();
+      }
+    });
 
     $('knownInput').addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
@@ -5210,12 +5266,42 @@ var CAS = (function () {
   }
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 
+  function domCaret(el) {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return fieldValue(el).length;
+    var r = sel.getRangeAt(0);
+    if (!el.contains || !el.contains(r.endContainer)) return fieldValue(el).length;
+    var pre = r.cloneRange();
+    pre.selectNodeContents(el);
+    pre.setEnd(r.endContainer, r.endOffset);
+    return pre.toString().length;
+  }
+
+  function setDomCaret(el, pos) {
+    try {
+      var node = el.firstChild;
+      if (!node || node.nodeType !== 3) {
+        el.textContent = '';
+        node = document.createTextNode('');
+        el.appendChild(node);
+      }
+      var n = clamp(pos, 0, node.textContent.length);
+      var range = document.createRange();
+      range.setStart(node, n);
+      range.collapse(true);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (_) { /* نادیده */ }
+  }
+
   function saveSel() {
     if (!active) return;
     try {
       var s = active.selectionStart, e = active.selectionEnd;
       if (typeof s === 'number' && typeof e === 'number') { selStart = s; selEnd = e; }
-    } catch (_) { /* برخی مرورگرها روی برخی فیلدها محدودیت دارند */ }
+      else { selStart = selEnd = domCaret(active); }
+    } catch (_) { selStart = selEnd = domCaret(active); }
   }
 
   function labelFor(inp) {
@@ -5252,10 +5338,19 @@ var CAS = (function () {
   function focusActive() {
     if (!active) return;
     try { active.focus({ preventScroll: true }); } catch (_) { active.focus(); }
-    try { active.setSelectionRange(selStart, selEnd); } catch (_) { /* نادیده */ }
+    try {
+      if (typeof active.setSelectionRange === 'function') active.setSelectionRange(selStart, selEnd);
+      else {
+        var saved = parseInt(active.getAttribute('data-caret') || '-1', 10);
+        setDomCaret(active, saved >= 0 ? saved : selStart);
+      }
+    } catch (_) { /* نادیده */ }
   }
 
   function fireInput(inp) {
+    if (inp && inp.getAttribute && inp.getAttribute('data-math-field') === '1') {
+      inp.setAttribute('data-caret', String(selStart));
+    }
     try {
       inp.dispatchEvent(new Event('input', { bubbles: true }));
     } catch (_) {
@@ -5353,7 +5448,7 @@ var CAS = (function () {
   function slot(slotName, label, value, cls) {
     return '<input type="text" class="math-input tpl-slot ' + (cls || '') + '" ' +
       'data-slot="' + slotName + '" data-label="' + esc(label) + '" ' +
-      'dir="ltr" inputmode="none" spellcheck="false" value="' + esc(value) + '" placeholder="' + esc(label) + '">';
+      'dir="ltr" spellcheck="false" value="' + esc(value) + '" placeholder="' + esc(label) + '">';
   }
 
   function templateHtml(type) {

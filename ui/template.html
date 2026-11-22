@@ -56,7 +56,7 @@
 
           <div class="kb-equation">
             <div class="preview-label">نمایش عبارت معادله</div>
-            <div class="preview eq-display" id="previewBox" data-math-field="1" data-raw="" tabindex="0" role="textbox" aria-label="نمایش عبارت معادله" inputmode="none" spellcheck="false" aria-live="polite"></div>
+            <div class="preview eq-display" id="previewBox" data-math-field="1" data-raw="" contenteditable="true" tabindex="0" role="textbox" aria-label="نمایش عبارت معادله" spellcheck="false" aria-live="polite"></div>
           </div>
 
           <div class="kb-keys" id="kbKeys" aria-label="کلیدهای ریاضی">
@@ -152,7 +152,7 @@
           </label>
           <div class="field" id="rhsField" style="display:none">
             <label>سمت راست معادله <span class="math-inline"><i>f</i>(<i>x</i>,<i>y</i>)</span></label>
-            <input type="text" class="math-input" dir="ltr" inputmode="none" id="rhsInput" placeholder="exp(2*x)  یا  x*y^2  یا  sin(x)" autocomplete="off" spellcheck="false">
+            <input type="text" class="math-input" dir="ltr" id="rhsInput" placeholder="exp(2*x)  یا  x*y^2  یا  sin(x)" autocomplete="off" spellcheck="false">
           </div>
         </div>
 
@@ -178,7 +178,7 @@
           <div class="inner">
             <div class="field">
               <label>جواب خصوصی یا ریشهٔ معلوم</label>
-              <input type="text" class="math-input" dir="ltr" inputmode="none" id="knownInput" placeholder="مثلاً  1   یا   exp(x)" autocomplete="off" spellcheck="false">
+              <input type="text" class="math-input" dir="ltr" id="knownInput" placeholder="مثلاً  1   یا   exp(x)" autocomplete="off" spellcheck="false">
               <div class="sub">
                 برای ریکاتی: یک جواب خصوصی معادله؛ برای کاهش مرتبه: جواب <span class="math-inline"><i>y</i><sub>1</sub></span>؛
                 برای معادله‌های با ضرایب ثابت: یکی از ریشه‌های معادلهٔ مشخصه.

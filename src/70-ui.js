@@ -49,7 +49,7 @@
     f1.innerHTML = '<label>نقطهٔ شروع <span class="math-inline"><i>x</i><sub>0</sub></span></label>';
     var i1 = document.createElement('input');
     i1.type = 'text'; i1.id = 'ic-x0'; i1.value = state.icX0;
-    i1.className = 'math-input'; i1.dir = 'ltr'; i1.inputMode = 'none';
+    i1.className = 'math-input'; i1.dir = 'ltr';
     i1.placeholder = '0'; i1.autocomplete = 'off'; i1.spellcheck = false;
     i1.addEventListener('input', function () { state.icX0 = i1.value; });
     i1.addEventListener('keydown', function (ev) {
@@ -67,7 +67,6 @@
         inp.id = 'ic-' + k2;
         inp.className = 'math-input';
         inp.dir = 'ltr';
-        inp.inputMode = 'none';
         inp.value = state.icVals[k2] || '';
         inp.placeholder = '0';
         inp.autocomplete = 'off';
@@ -165,10 +164,35 @@
     }
   }
 
+  function setDomCaret(el, pos) {
+    try {
+      var node = el.firstChild;
+      if (!node || node.nodeType !== 3) {
+        node = document.createTextNode('');
+        el.textContent = '';
+        el.appendChild(node);
+      }
+      var n = Math.max(0, Math.min(pos, node.textContent.length));
+      var range = document.createRange();
+      range.setStart(node, n);
+      range.collapse(true);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (_) { /* نادیده */ }
+  }
+
   function updatePreview() {
     var box = $('previewBox');
     if (!box) return;
     if (!box.hasAttribute('data-raw')) box.setAttribute('data-raw', '');
+    if (document.activeElement === box) {
+      var raw = box.getAttribute('data-raw') || '';
+      if (box.textContent !== raw) box.textContent = raw;
+      var caret = parseInt(box.getAttribute('data-caret') || '-1', 10);
+      if (caret >= 0) setDomCaret(box, caret);
+      return;
+    }
     box.innerHTML = '<div class="math">' + previewEquation() + '</div>';
   }
 
@@ -420,7 +444,37 @@
       $('icBody').style.display = this.checked ? '' : 'none';
     });
 
-    $('previewBox').addEventListener('input', function () { syncEquation(); updatePreview(); });
+    var display = $('previewBox');
+    display.addEventListener('focus', function () {
+      var raw = this.getAttribute('data-raw') || '';
+      this.removeAttribute('data-caret');
+      this.textContent = raw;
+      setDomCaret(this, raw.length);
+    });
+    display.addEventListener('input', function (ev) {
+      if (ev.isTrusted) {
+        this.removeAttribute('data-caret');
+        this.setAttribute('data-raw', this.textContent.replace(/\u00a0/g, ' '));
+      }
+      syncEquation();
+      updatePreview();
+    });
+    display.addEventListener('blur', function () {
+      this.removeAttribute('data-caret');
+      syncEquation();
+      updatePreview();
+    });
+    display.addEventListener('paste', function (ev) {
+      ev.preventDefault();
+      var text = (ev.clipboardData || window.clipboardData).getData('text') || '';
+      document.execCommand('insertText', false, text);
+    });
+    display.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) {
+        ev.preventDefault();
+        solve();
+      }
+    });
 
     $('knownInput').addEventListener('keydown', function (ev) {
       if (ev.key === 'Enter' && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); solve(); }
