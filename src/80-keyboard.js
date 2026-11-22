@@ -74,12 +74,8 @@
     var lab = inp.getAttribute && inp.getAttribute('data-label');
     if (lab) return lab;
     var id = inp.id || '';
-    if (id.indexOf('coef-') === 0) {
-      var k = Number(id.slice(5));
-      return 'ضریب ' + (YNAMES[k] || ('y(' + k + ')'));
-    }
     if (id === 'rhsInput') return 'سمت راست معادله';
-    if (id === 'rawInput') return 'معادلهٔ کامل';
+    if (id === 'rawInput') return 'عبارت معادله';
     if (id === 'ic-x0') return 'x₀';
     if (id.indexOf('ic-') === 0) {
       var j = Number(id.slice(3));
