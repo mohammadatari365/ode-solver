@@ -922,32 +922,6 @@ body.kb-open { padding-bottom: 0; }
 }
 .kb-fab:active { transform: scale(.96); }
 
-/* پیشنمایش زندهٔ عبارت */
-.kb-preview {
-  display: flex; align-items: center; gap: 10px;
-  max-width: 620px; margin: 0 auto 7px;
-  padding: 5px 10px;
-  background: #fff;
-  border: 1px solid #d7e2f2;
-  border-radius: 10px;
-  min-height: 40px;
-}
-.kb-preview-cap {
-  flex: none; font-size: 10.5px; font-weight: 800; color: #6b7c93;
-  writing-mode: horizontal-tb;
-}
-.kb-preview-math {
-  flex: 1; min-width: 0;
-  direction: ltr; text-align: left; white-space: nowrap; overflow-x: auto;
-  font-family: var(--mono); font-size: 19px; color: #14243b;
-}
-.kb-preview-math .op { color: #1f6feb; padding: 0 4px; }
-.kb-preview-raw {
-  flex: none; max-width: 34%;
-  direction: ltr; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  font: 10.5px var(--mono); color: #8495aa;
-}
-.kb-muted { color: #a3b0c2; font-family: inherit; }
 
 /* ساختارهای视觉效果 (توان، کسر، ریشه، ...) */
 .kb-key.tpl {
@@ -1088,8 +1062,6 @@ body.kb-open { padding-bottom: 0; }
   .kb-foot { justify-content: center; }
   .kb-solve { width: 100%; }
   .kb-target { max-width: 40vw; }
-  .kb-preview-cap { display: none; }
-  .kb-preview-math { font-size: 17px; }
   .kb-composer { left: 8px; right: 8px; top: 88px; bottom: 50px; padding: 8px 10px; }
   .kb-comp-hint { display: none; }
   .kb-comp-foot { justify-content: stretch; }
@@ -1197,7 +1169,7 @@ body {
 
 /* ورودیها */
 .order-btn, .btn, .ex, .tag, .kb-key, .kb-mini, .kb-solve, .tpl-fn,
-.tpl-caret, .kb-target, .kb-preview-cap, .kb-comp-hint {
+.tpl-caret, .kb-target, .kb-comp-hint {
   font-family: var(--tech);
 }
 .order-btn {
@@ -1374,11 +1346,7 @@ details.section[open] > summary::before { content: "▾"; }
   color: #04121e;
   box-shadow: 0 0 22px rgba(0, 240, 255, .45);
 }
-.kb-preview { background: rgba(3, 8, 18, .85); border-color: rgba(0, 240, 255, .3); }
-.kb-preview-math { color: var(--neon-lime); }
-.kb-preview-math .op { color: var(--neon-cyan); }
-.kb-preview-raw, .kb-tip { color: var(--cy-dim); }
-.kb-muted { color: #5a708f; }
+.kb-tip { color: var(--cy-dim); }
 .kb-composer { background: rgba(8, 12, 26, .98); border-color: rgba(255, 43, 214, .45); box-shadow: 0 0 34px rgba(255, 43, 214, .2); }
 .kb-comp-head { color: var(--neon-magenta); }
 .tpl-slot { background: rgba(0, 240, 255, .06) !important; border-color: rgba(0, 240, 255, .4) !important; color: var(--neon-lime); }
@@ -1412,7 +1380,7 @@ details.section[open] > summary::before { content: "▾"; }
   .card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
   .card.input-card { display: none; }
   .alts, .actions { display: none; }
-  .kb-dock, .kb-fab, .kb-composer, .kb-preview { display: none !important; }
+  .kb-dock, .kb-fab, .kb-composer { display: none !important; }
   body.kb-open { padding-bottom: 0; }
   .math { overflow: visible; }
   .source-ref { max-width: none; border-color: #ccc; background: #fff; }
@@ -1428,7 +1396,7 @@ details.section[open] > summary::before { content: "▾"; }
   .hero h1, .card-head h2, .method-name, .step-title, .empty-state h3,
   .source-ref > summary, .logo-mark, .handle, .chip-soft { color: #000 !important; text-shadow: none !important; box-shadow: none !important; }
   .card, .coef-row, .switch-row, details.section, .preview, .answer-box,
-  .step .note, .step .warn, .warnings, .alts, .error-box, .kb-preview, .source-ref {
+  .step .note, .step .warn, .warnings, .alts, .error-box, .source-ref {
     background: #fff !important; border-color: #ccc !important;
     box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
   }
@@ -1488,11 +1456,9 @@ details.section[open] > summary::before { content: "▾"; }
         <div class="preview-label">نمایش عبارت معادله</div>
         <div class="preview" id="previewBox" aria-live="polite"></div>
 
-        <span class="label">مرتبهٔ معادله</span>
         <div class="order-row" id="orderRow" role="group" aria-label="انتخاب مرتبه"></div>
 
         <div id="coefArea">
-          <span class="label">ضرایب <small>(عبارت‌هایی از x و y؛ مثلاً 2، -3x، sin(x))</small></span>
           <div class="coef-list" id="coefList"></div>
         </div>
 
@@ -1507,12 +1473,6 @@ details.section[open] > summary::before { content: "▾"; }
             <div class="kb-bar-actions">
               <button type="button" class="kb-mini" id="kbClose" title="بستن (Esc)" aria-label="بستن صفحهکلید">✕</button>
             </div>
-          </div>
-
-          <div class="kb-preview" aria-live="polite">
-            <span class="kb-preview-cap">پیشنمایش</span>
-            <div class="kb-preview-math" id="kbPreviewMath">—</div>
-            <div class="kb-preview-raw" id="kbPreviewRaw"></div>
           </div>
 
           <div class="kb-keys" id="kbKeys" aria-label="کلیدهای ریاضی">
@@ -5441,8 +5401,6 @@ var CAS = (function () {
   var solveBtn = document.getElementById('kbSolve');
   var keys = document.getElementById('kbKeys');
   var targetLabel = document.getElementById('kbTarget');
-  var previewMath = document.getElementById('kbPreviewMath');
-  var previewRaw = document.getElementById('kbPreviewRaw');
   var composer = document.getElementById('kbComposer');
   var compBody = document.getElementById('kbCompBody');
   var compTitle = document.getElementById('kbCompTitle');
@@ -5520,31 +5478,8 @@ var CAS = (function () {
     return 'فیلد ورودی';
   }
 
-  function renderMathText(val) {
-    if (!val) return '<span class="kb-muted">—</span>';
-    try {
-      if (typeof CAS !== 'undefined' && CAS.parse && CAS.render) {
-        if (val.indexOf('=') >= 0) {
-          var p = val.split('=');
-          return CAS.render(CAS.parse(p[0])) + '<span class="op">=</span>' + CAS.render(CAS.parse(p[1]));
-        }
-        return CAS.render(CAS.parse(val));
-      }
-    } catch (_) { /* در صورت ورودی ناقص، متن خام نمایش می‌یابد */ }
-    return esc(val);
-  }
-
-  function updatePreviewStrip() {
-    if (!previewMath) return;
-    var src = (compType && returnTarget) ? returnTarget : active;
-    var val = src ? String(src.value || '') : '';
-    previewMath.innerHTML = renderMathText(val);
-    if (previewRaw) previewRaw.textContent = val || '—';
-  }
-
   function refreshTarget() {
     if (targetLabel) targetLabel.textContent = active ? labelFor(active) : 'فیلدی را انتخاب کنید';
-    updatePreviewStrip();
   }
 
   function pickTarget() {

@@ -12,8 +12,6 @@
   var solveBtn = document.getElementById('kbSolve');
   var keys = document.getElementById('kbKeys');
   var targetLabel = document.getElementById('kbTarget');
-  var previewMath = document.getElementById('kbPreviewMath');
-  var previewRaw = document.getElementById('kbPreviewRaw');
   var composer = document.getElementById('kbComposer');
   var compBody = document.getElementById('kbCompBody');
   var compTitle = document.getElementById('kbCompTitle');
@@ -91,31 +89,8 @@
     return 'فیلد ورودی';
   }
 
-  function renderMathText(val) {
-    if (!val) return '<span class="kb-muted">—</span>';
-    try {
-      if (typeof CAS !== 'undefined' && CAS.parse && CAS.render) {
-        if (val.indexOf('=') >= 0) {
-          var p = val.split('=');
-          return CAS.render(CAS.parse(p[0])) + '<span class="op">=</span>' + CAS.render(CAS.parse(p[1]));
-        }
-        return CAS.render(CAS.parse(val));
-      }
-    } catch (_) { /* در صورت ورودی ناقص، متن خام نمایش می‌یابد */ }
-    return esc(val);
-  }
-
-  function updatePreviewStrip() {
-    if (!previewMath) return;
-    var src = (compType && returnTarget) ? returnTarget : active;
-    var val = src ? String(src.value || '') : '';
-    previewMath.innerHTML = renderMathText(val);
-    if (previewRaw) previewRaw.textContent = val || '—';
-  }
-
   function refreshTarget() {
     if (targetLabel) targetLabel.textContent = active ? labelFor(active) : 'فیلدی را انتخاب کنید';
-    updatePreviewStrip();
   }
 
   function pickTarget() {
