@@ -25,9 +25,9 @@
     const blocks = [];
     blocks.push(P('شکل استاندارد معادلهٔ خطی مرتبهٔ اول چنین است:'));
     blocks.push(MH(vh + '′ + <span class="paren">(</span>' + inl(Pf) + '<span class="paren">)</span>' + vh + ' = ' + inl(Qf)));
-    blocks.push(P('ابتدا عامل انتگرال‌ساز را می‌سازیم:'));
+    blocks.push(P('ابتدا عامل انتگرال‌ساز را می سازیم:'));
     blocks.push(MH('<i>μ</i>(<i>x</i>) = <i>e</i><sup>∫<i>P</i> d<i>x</i></sup> = <i>e</i><sup>' + (core.IpOk ? inl(core.Ip) : '∫' + inl(Pf) + ' d<i>x</i>') + '</sup> = ' + inl(core.mu)));
-    blocks.push(P('دو طرف معادله را در μ ضرب می‌کنیم. سمت چپ به صورت مشتق حاصل‌ضرب درمی‌آید:'));
+    blocks.push(P('دو طرف معادله را در μ ضرب می کنیم. سمت چپ به صورت مشتق حاصل‌ضرب درمی آید:'));
     blocks.push(MH('<span class="paren">(</span><i>μ</i>' + vh + '<span class="paren">)</span>′ = <i>μ</i> · ' + inl(Qf)));
     blocks.push(P('با انتگرال‌گیری از دو طرف:'));
     blocks.push(MH('<i>μ</i>' + vh + ' = ' + (core.IOk ? inl(core.I) : '∫ ' + inl(core.muQ) + ' d<i>x</i>') + ' + <i>C</i><sub>1</sub>'));
@@ -43,7 +43,7 @@
     const core = linearCore(Pf, Qf);
     const steps = [];
     steps.push(STEP('تشخیص نوع معادله',
-      P('این معادله نسبت به <i>y</i> خطی است و می‌توان آن را به شکل استاندارد <b>معادلهٔ دیفرانسیل خطی مرتبهٔ اول</b> نوشت.'),
+      P('این معادله نسبت به <i>y</i> خطی است و می توان آن را به شکل استاندارد <b>معادلهٔ دیفرانسیل خطی مرتبهٔ اول</b> نوشت.'),
       MH('<i>y</i>′ = ' + inl(F)),
       P('یعنی:'),
       MH('<i>y</i>′ + <span class="paren">(</span>' + inl(Pf) + '<span class="paren">)</span><i>y</i> = ' + inl(Qf))
@@ -86,14 +86,14 @@
       MH('<i>y</i>′ + <span class="paren">(</span>' + inl(Pf) + '<span class="paren">)</span><i>y</i> = <span class="paren">(</span>' + inl(Qf) + '<span class="paren">)</span> <i>y</i><sup>' + inl(num(n)) + '</sup>')
     ));
     steps.push(STEP('تغییر متغیر',
-      P('دو طرف را بر <i>y</i><sup>n</sup> تقسیم می‌کنیم و تغییر متغیر زیر را به کار می‌بریم:'),
+      P('دو طرف را بر <i>y</i><sup>n</sup> تقسیم می کنیم و تغییر متغیر زیر را به کار می بریم:'),
       MH('<i>v</i> = <i>y</i><sup>1−n</sup> = <i>y</i><sup>' + inl(num(k)) + '</sup> &nbsp;⟹&nbsp; <i>v</i>′ = ' + inl(num(k)) + ' <i>y</i><sup>−' + inl(num(n)) + '</sup> <i>y</i>′'),
-      P('در این صورت معادله به یک معادلهٔ خطی مرتبهٔ اول در <i>v</i> تبدیل می‌شود:'),
+      P('در این صورت معادله به یک معادلهٔ خطی مرتبهٔ اول در <i>v</i> تبدیل می شود:'),
       MH('<i>v</i>′ + <span class="paren">(</span>' + inl(Pv) + '<span class="paren">)</span><i>v</i> = ' + inl(Qv))
     ));
     steps.push(STEP('حل معادلهٔ خطی در v', ...linearStepBlocks(Pv, Qv, core, 'v')));
     steps.push(STEP('بازگشت به متغیر اصلی',
-      P('با قرار دادن <i>v</i> = <i>y</i><sup>1−n</sup> جواب عمومی به دست می‌آید:'),
+      P('با قرار دادن <i>v</i> = <i>y</i><sup>1−n</sup> جواب عمومی به دست می آید:'),
       MH('<i>y</i><sup>' + inl(num(k)) + '</sup> = ' + inl(vSol)),
       MH('<i>y</i> = ' + inl(ySol))
     ));
@@ -147,13 +147,13 @@
     if (y1) {
       const guessed = !cfg.knownExpr;
       steps.push(STEP('جواب خصوصی معلوم',
-        P((guessed ? 'با بررسی چند گزینهٔ ساده، جواب خصوصی زیر پیدا شد و در معادله صدق می‌کند:' : 'جواب خصوصی داده‌شده در معادله صدق می‌کند:')),
+        P((guessed ? 'با بررسی چند گزینهٔ ساده، جواب خصوصی زیر پیدا شد و در معادله صدق می کند:' : 'جواب خصوصی داده شده در معادله صدق می کند:')),
         MH('<i>y</i><sub>1</sub> = ' + inl(y1)),
-        P('برای حل، از تغییر متغیر زیر استفاده می‌کنیم:'),
+        P('برای حل، از تغییر متغیر زیر استفاده می کنیم:'),
         MH('<i>y</i> = <i>y</i><sub>1</sub> + <i>u</i><sup>−1</sup>')
       ));
       steps.push(STEP('تبدیل به معادلهٔ خطی',
-        P('با جایگذاری این تغییر متغیر، معادلهٔ ریکاتی به یک معادلهٔ خطی مرتبهٔ اول در <i>u</i> تبدیل می‌شود:'),
+        P('با جایگذاری این تغییر متغیر، معادلهٔ ریکاتی به یک معادلهٔ خطی مرتبهٔ اول در <i>u</i> تبدیل می شود:'),
         MH('<i>u</i>′ + <span class="paren">(</span>' + inl(b2) + '<span class="paren">)</span><i>u</i> = ' + inl(neg(c)))
       ));
       steps.push(STEP('حل معادلهٔ خطی در u', ...linearStepBlocks(b2, neg(c), core, 'u')));

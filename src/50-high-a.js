@@ -197,7 +197,7 @@
         b = Math.abs(k);
         continue;
       }
-      if (f0.t === 'f' && f0.f === 'ln') { /* پشتیبانی نمی‌شود */ return null; }
+      if (f0.t === 'f' && f0.f === 'ln') { /* پشتیبانی نمی شود */ return null; }
       if (f0.t === 'f' && f0.f === 'abs') return null;
       if (f0.t === 'f') return null;
       return null;

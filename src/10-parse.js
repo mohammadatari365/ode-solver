@@ -66,7 +66,7 @@
   function isFunc(name) { return FUNCS.indexOf(name) >= 0; }
   function isVar(name) { return VARS.indexOf(name) >= 0; }
 
-  /* شناسه‌های به‌هم‌چسبیده مثل 2xsin(x) را به اجزا می‌شکند */
+  /* شناسه‌های به‌هم‌چسبیده مثل 2xsin(x) را به اجزا می شکند */
   function identNode(id, toks, pos) {
     if (id === 'log') return { func: 'ln' };
     if (isFunc(id)) return { func: id };

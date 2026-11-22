@@ -85,7 +85,7 @@
     }
     let n = order0;
     while (n > 0 && CAS.isZero(coeffs[n])) n--;
-    if (n === 0) throw new Error('ضریب بالاترین مشتق صفر است و معادله عملاً جبری می‌شود.');
+    if (n === 0) throw new Error('ضریب بالاترین مشتق صفر است و معادله عملاً جبری می شود.');
     const cs = coeffs.slice(0, n + 1);
     cfg.order = n;
 
@@ -127,14 +127,14 @@
         MH('L[y] = ' + inl(L) + (nonhom ? ' = ' + inl(R) : ' = 0'))
       ));
       steps.push(STEP('تشکیل معادلهٔ مشخصه',
-        P('برای جواب‌های نمایی <span class="math-inline"><i>y</i> = <i>e</i><sup><i>rx</i></sup></span>، معادلهٔ مشخصه به دست می‌آید:'),
+        P('برای جواب‌های نمایی <span class="math-inline"><i>y</i> = <i>e</i><sup><i>rx</i></sup></span>، معادلهٔ مشخصه به دست می آید:'),
         MH('<i>P</i>(<i>r</i>) = ' + CAS._charPolyString(coeffDesk, 'r') + ' = 0')
       ));
       steps.push(STEP('ریشه‌های معادلهٔ مشخصه',
         ...rootBlocks(info, n, n === 2 ? { a2: consts[2], a1: consts[1], a0: consts[0] } : null)
       ));
       steps.push(STEP('ساخت جواب عمومی همگن',
-        P('بر اساس نوع ریشه‌ها، جواب‌های پایه (مستقل خطی) ساخته می‌شوند:'),
+        P('بر اساس نوع ریشه‌ها، جواب‌های پایه (مستقل خطی) ساخته می شوند:'),
         LIST(basisExplanation(info, n)),
         MH('<i>y</i><sub>h</sub> = ' + yhHtml(basis))
       ));
@@ -152,25 +152,25 @@
       steps.push(STEP('تشخیص معادلهٔ کوشی–اویلر',
         P('ضرایب معادله به ترتیب توان‌های x هستند؛ یعنی ضریب مشتق k‌ام با x<sup>k</sup> متناسب است. این معادله از نوع <b>کوشی–اویلر</b> است:'),
         MH(inl(L) + (nonhom ? ' = ' + inl(R) : ' = 0')),
-        P('با تغییر متغیر <span class="math-inline"><i>x</i> = <i>e</i><sup><i>t</i></sup></span> (یا فرض <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span>) به معادلهٔ خطی با ضرایب ثابت تبدیل می‌شود.')
+        P('با تغییر متغیر <span class="math-inline"><i>x</i> = <i>e</i><sup><i>t</i></sup></span> (یا فرض <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span>) به معادلهٔ خطی با ضرایب ثابت تبدیل می شود.')
       ));
       steps.push(STEP('معادلهٔ شاخصی',
-        P('با جایگذاری <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span> در معادله، معادلهٔ شاخصی (مشخصه) به دست می‌آید:'),
+        P('با جایگذاری <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span> در معادله، معادلهٔ شاخصی (مشخصه) به دست می آید:'),
         MH(CAS._charPolyString(eulerInfo, 'λ') + ' = 0')
       ));
       steps.push(STEP('ریشه‌های معادلهٔ شاخصی',
         ...rootBlocks(info, n, null, 'λ')
       ));
       steps.push(STEP('جواب عمومی همگن',
-        P('با ریشه‌های λ، جواب‌ها به شکل <span class="math-inline"><i>x</i><sup>λ</sup></span> (و در حالت مختلط <span class="math-inline"><i>x</i><sup>α</sup>cos(β ln x)</span>) ساخته می‌شوند:'),
+        P('با ریشه‌های λ، جواب‌ها به شکل <span class="math-inline"><i>x</i><sup>λ</sup></span> (و در حالت مختلط <span class="math-inline"><i>x</i><sup>α</sup>cos(β ln x)</span>) ساخته می شوند:'),
         MH('<i>y</i><sub>h</sub> = ' + yhHtml(basis))
       ));
-      if (cfg.x0 <= 0) warnings.push('جواب کوشی–اویلر روی بازهٔ x > 0 نوشته می‌شود؛ نقطهٔ x₀ باید مثبت باشد.');
+      if (cfg.x0 <= 0) warnings.push('جواب کوشی–اویلر روی بازهٔ x > 0 نوشته می شود؛ نقطهٔ x₀ باید مثبت باشد.');
     } else if (n === 2 && cfg.knownExpr) {
       const y1 = cfg.knownExpr;
       const lhs1 = add(mul(cs[2], CAS.nthDiff(y1, 'x', 2)), mul(cs[1], diff(y1, 'x')), mul(cs[0], y1));
       if (!CAS.isZero(lhs1)) {
-        throw new Error('جواب معلوم واردشده در معادله صدق نمی‌کند؛ آن را بررسی کنید.');
+        throw new Error('جواب معلوم واردشده در معادله صدق نمی کند؛ آن را بررسی کنید.');
       }
       const red = CAS._reductionOfOrder(y1, cs[1], cs[2]);
       basis = [y1, red.y2];
@@ -179,7 +179,7 @@
       methodNote = 'یافتن جواب دوم مستقل خطی';
       tags = [TAGS.orden2, TAGS.linear];
       steps.push(STEP('جواب معلوم و تغییر متغیر',
-        P('جواب <span class="math-inline"><i>y</i><sub>1</sub> = ' + inl(y1) + '</span> در معادله صدق می‌کند. برای یافتن جواب دوم مستقل، از تغییر متغیر <span class="math-inline"><i>y</i> = <i>u</i>(<i>x</i>)<i>y</i><sub>1</sub></span> استفاده می‌کنیم.'),
+        P('جواب <span class="math-inline"><i>y</i><sub>1</sub> = ' + inl(y1) + '</span> در معادله صدق می کند. برای یافتن جواب دوم مستقل، از تغییر متغیر <span class="math-inline"><i>y</i> = <i>u</i>(<i>x</i>)<i>y</i><sub>1</sub></span> استفاده می کنیم.'),
         MH('<i>y</i><sub>2</sub> = <i>y</i><sub>1</sub> ∫ ' + CAS.fracHtml('<i>e</i><sup>−∫<i>P</i> d<i>x</i></sup>', '<i>y</i><sub>1</sub><sup>2</sup>') + ' d<i>x</i>')
       ));
       steps.push(STEP('محاسبهٔ جواب دوم',
@@ -192,7 +192,7 @@
         MH('<i>y</i> = ' + inl(yh))
       ));
     } else {
-      throw new Error('این معادلهٔ خطی مرتبهٔ ' + n + ' با ضرایب متغیر است و در قالب کوشی–اویلر یا کاهش مرتبه حل نمی‌شود. برای مرتبهٔ دوم می‌توانید یک جواب معلوم وارد کنید.');
+      throw new Error('این معادلهٔ خطی مرتبهٔ ' + n + ' با ضرایب متغیر است و در قالب کوشی–اویلر یا کاهش مرتبه حل نمی شود. برای مرتبهٔ دوم می توانید یک جواب معلوم وارد کنید.');
     }
 
     /* ---------------- بخش ناهمگن ---------------- */
@@ -203,16 +203,16 @@
         if (und) {
           yp = und.yp; partInfo = und; partMethod = 'undetermined';
           steps.push(STEP('انتخاب شکل جواب خصوصی (ضرایب نامعین)',
-            P('جملهٔ ناهمگن ترکیبی از چندجمله‌ای، نمایی و توابع مثلثاتی است. شکل حدسی جواب خصوصی را با ضرایب نامعین می‌نویسیم:'),
+            P('جملهٔ ناهمگن ترکیبی از چندجمله‌ای، نمایی و توابع مثلثاتی است. شکل حدسی جواب خصوصی را با ضرایب نامعین می نویسیم:'),
             MH(trialHtml(und.basis)),
-            P('با جایگذاری در معادله و مساوی قرار دادن ضرایب، دستگاه خطی ضرایب حل می‌شود.'),
+            P('با جایگذاری در معادله و مساوی قرار دادن ضرایب، دستگاه خطی ضرایب حل می شود.'),
             MH('<i>y</i><sub>p</sub> = ' + inl(yp))
           ));
         } else if (n === 2) {
           variation = CAS._variation2(basis, R, cs[2]);
           yp = variation.yp; partMethod = 'variation';
           steps.push(STEP('روش تغییر پارامترها',
-            P('چون جملهٔ ناهمگن در قالب ضرایب نامعین نمی‌گنجد، از روش تغییر پارامترها استفاده می‌کنیم:'),
+            P('چون جملهٔ ناهمگن در قالب ضرایب نامعین نمی گنجد، از روش تغییر پارامترها استفاده می کنیم:'),
             MH('<i>y</i><sub>p</sub> = −<i>y</i><sub>1</sub> ∫ ' + CAS.fracHtml('<i>y</i><sub>2</sub><i>g</i>', '<i>W</i>') + ' d<i>x</i> + <i>y</i><sub>2</sub> ∫ ' + CAS.fracHtml('<i>y</i><sub>1</sub><i>g</i>', '<i>W</i>') + ' d<i>x</i>'),
             MH('<i>W</i>(<i>y</i><sub>1</sub>,<i>y</i><sub>2</sub>) = ' + inl(variation.W)),
             MH('<i>y</i><sub>p</sub> = ' + inl(yp)),
@@ -223,7 +223,7 @@
         variation = CAS._variation2(basis, R, cs[2]);
         yp = variation.yp; partMethod = 'variation';
         steps.push(STEP('جواب خصوصی با تغییر پارامترها',
-          P('برای معادلهٔ کوشی–اویلر ناهمگن، از تغییر پارامترها استفاده می‌کنیم:'),
+          P('برای معادلهٔ کوشی–اویلر ناهمگن، از تغییر پارامترها استفاده می کنیم:'),
           MH('<i>W</i> = ' + inl(variation.W)),
           MH('<i>y</i><sub>p</sub> = ' + inl(yp))
         ));
@@ -267,7 +267,7 @@
           warnings.push('شرایط اولیه با دقت عددی برقرار نشدند؛ ممکن است شرایط ناسازگار یا نقطهٔ x₀ تکین باشد.');
         }
       } else {
-        warnings.push('دستگاه شرایط اولیه تکین بود و ثابت‌ها به‌دست نیامدند.');
+        warnings.push('دستگاه شرایط اولیه تکین بود و ثابت‌ها به دست نیامدند.');
       }
     }
 
@@ -275,7 +275,7 @@
       const err = CAS.verifyResult(cfg, particular || general);
       if (err !== null && err < 1e-5) {
         steps.push(STEP('بررسی صحت جواب',
-          P('جواب به‌دست‌آمده در معادلهٔ اصلی جایگذاری و در چند نقطه به‌صورت عددی بررسی شد؛ باقی‌ماندهٔ معادله در حد خطای گردکردن صفر است. ✓')
+          P('جواب به دست‌آمده در معادلهٔ اصلی جایگذاری و در چند نقطه به‌صورت عددی بررسی شد؛ باقی‌ماندهٔ معادله در حد خطای گردکردن صفر است. ✓')
         ));
       }
     }
@@ -319,7 +319,7 @@
     steps.push(STEP('جواب همگن', MH('<i>y</i><sub>h</sub> = ' + inl(yh))));
     const v = CAS._variation2(basis, R, a2);
     steps.push(STEP('روش تغییر پارامترها',
-      P('جواب خصوصی با فرمول تغییر پارامترها محاسبه می‌شود:'),
+      P('جواب خصوصی با فرمول تغییر پارامترها محاسبه می شود:'),
       MH('<i>W</i> = <i>y</i><sub>1</sub><i>y</i><sub>2</sub>′ − <i>y</i><sub>1</sub>′<i>y</i><sub>2</sub> = ' + inl(v.W)),
       MH('<i>y</i><sub>p</sub> = ' + inl(v.yp))
     ));
@@ -336,7 +336,7 @@
 
   function buildUndetAlt(cfg, basis, R, info, consts) {
     const und = CAS._undetermined(consts.slice().reverse(), R, info);
-    if (!und) throw new Error('روش ضرایب نامعین برای این جملهٔ ناهمگن به کار نمی‌رود.');
+    if (!und) throw new Error('روش ضرایب نامعین برای این جملهٔ ناهمگن به کار نمی رود.');
     const yh = yhFromBasis(basis);
     const steps = [];
     steps.push(STEP('جواب همگن', MH('<i>y</i><sub>h</sub> = ' + inl(yh))));

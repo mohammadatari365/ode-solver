@@ -17,7 +17,7 @@
         const C = CAS.evalNum(U, { x: cfg.x0, y: cfg.y0s[0] });
         if (isFinite(C)) {
           res.steps.push(STEP('اعمال شرایط اولیه',
-            P('شرط اولیه را در جواب ضمنی جایگذاری می‌کنیم:'),
+            P('شرط اولیه را در جواب ضمنی جایگذاری می کنیم:'),
             MH(inl(U) + ' = <i>C</i><sub>1</sub> &nbsp;⟹&nbsp; ' + inl(num(CAS.chop(C))) + ' = <i>C</i><sub>1</sub>'),
             P('بنابراین جواب خصوصی (به صورت ضمنی) چنین است:'),
             MH(inl(U) + ' = ' + inl(num(CAS.chop(C))))
@@ -54,7 +54,7 @@
 
     const c = CAS.findC1(gen, cfg.x0, cfg.y0s[0]);
     if (c === null || !isFinite(c)) {
-      res.warnings.push('یافتن مقدار C₁ از شرط اولیه با روش عددی ممکن نشد؛ جواب عمومی نمایش داده می‌شود.');
+      res.warnings.push('یافتن مقدار C₁ از شرط اولیه با روش عددی ممکن نشد؛ جواب عمومی نمایش داده می شود.');
       res.answerHtml = inl(gen);
       res.answerLabel = 'جواب عمومی';
       res.answerExpr = gen;
@@ -62,9 +62,9 @@
     }
     const part = simp(subs(gen, { C1: num(c) }));
     res.steps.push(STEP('اعمال شرایط اولیه',
-      P('شرط اولیهٔ <span class="math-inline"><i>y</i>(' + inl(num(cfg.x0)) + ') = ' + inl(num(cfg.y0s[0])) + '</span> را در جواب عمومی جایگذاری می‌کنیم:'),
+      P('شرط اولیهٔ <span class="math-inline"><i>y</i>(' + inl(num(cfg.x0)) + ') = ' + inl(num(cfg.y0s[0])) + '</span> را در جواب عمومی جایگذاری می کنیم:'),
       MH(inl(gen) + ' &nbsp;در&nbsp; <i>x</i> = ' + inl(num(cfg.x0)) + ' ⟹ ' + inl(num(cfg.y0s[0]))),
-      P('و مقدار ثابت به‌دست می‌آید:'),
+      P('و مقدار ثابت به دست می آید:'),
       MH('<i>C</i><sub>1</sub> = ' + inl(num(c))),
       P('پس جواب خصوصی نهایی:'),
       MH('<i>y</i> = ' + inl(part))
@@ -78,7 +78,7 @@
     const err = CAS.verifyResult(cfg, part);
     if (err !== null && err < 1e-6) {
       res.steps.push(STEP('بررسی صحت جواب',
-        P('جواب خصوصی در معادلهٔ اصلی جایگذاری و بررسی شد؛ هم در معادله و هم در شرط اولیه صدق می‌کند. ✓')
+        P('جواب خصوصی در معادلهٔ اصلی جایگذاری و بررسی شد؛ هم در معادله و هم در شرط اولیه صدق می کند. ✓')
       ));
     }
     return res;

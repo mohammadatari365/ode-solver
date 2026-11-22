@@ -1423,9 +1423,9 @@ details.section[open] > summary::before { content: "▾"; }
     </div>
     <h1>حل گام به گام معادلات دیفرانسیل معمولی (ODE) و مسائل مقدار اولیه (IVP)</h1>
     <p class="sub">
-      معادله را وارد کنید؛ برنامه نوع آن را تشخیص می‌دهد، روش مناسب را انتخاب می‌کند و حل را
-      مرحله به مرحله به زبان فارسی توضیح می‌دهد. تمام محاسبات جبر نمادین درون همین فایل و
-      بدون هیچ اتصال اینترنتی انجام می‌شود.
+      معادله را وارد کنید؛ برنامه نوع آن را تشخیص می دهد، روش مناسب را انتخاب می کند و حل را
+      مرحله به مرحله به زبان فارسی توضیح می دهد. تمام محاسبات جبر نمادین درون همین فایل و
+      بدون هیچ اتصال اینترنتی انجام می شود.
     </p>
       </header>
 
@@ -1536,7 +1536,7 @@ details.section[open] > summary::before { content: "▾"; }
           </div>
 
           <div class="kb-foot">
-            <span class="kb-tip">روی فیلد بزنید؛ کلیدهای xⁿ، a/b و √□ جایگاه‌های تصویری باز میکنند. نیازی به کیبورد دستگاه نیست.</span>
+            <span class="kb-tip">روی فیلد بزنید؛ کلیدهای xⁿ، a/b و √□ جایگاه‌های تصویری باز می کنند. نیازی به کیبورد دستگاه نیست.</span>
             <button type="button" class="kb-solve" id="kbSolve">حل گام به گام ↵</button>
           </div>
         </div>
@@ -1547,7 +1547,7 @@ details.section[open] > summary::before { content: "▾"; }
             <span class="switch" aria-hidden="true"></span>
             <span>
               <span class="sw-label">معادله ناهمگن است</span><br>
-              <span class="sw-hint">سمت راست صفر نیست و می‌خواهم آن را وارد کنم</span>
+              <span class="sw-hint">سمت راست صفر نیست و می خواهم آن را وارد کنم</span>
             </span>
           </label>
           <div class="field" id="rhsField" style="display:none">
@@ -1563,7 +1563,7 @@ details.section[open] > summary::before { content: "▾"; }
               <input type="checkbox" id="rawCheck">
               <span class="switch" aria-hidden="true"></span>
               <span>
-                <span class="sw-label">معادله را به شکل کامل می‌نویسم</span><br>
+                <span class="sw-label">معادله را به شکل کامل می نویسم</span><br>
                 <span class="sw-hint">مناسب معادله‌های ضمنی، کامل (Exact) و کلرو</span>
               </span>
             </label>
@@ -1582,7 +1582,7 @@ details.section[open] > summary::before { content: "▾"; }
               <span class="switch" aria-hidden="true"></span>
               <span>
                 <span class="sw-label">شرایط اولیه را دارم</span><br>
-                <span class="sw-hint">با وارد کردن مقادیر، ثابت‌ها و جواب خصوصی محاسبه می‌شوند</span>
+                <span class="sw-hint">با وارد کردن مقادیر، ثابت‌ها و جواب خصوصی محاسبه می شوند</span>
               </span>
             </label>
             <div id="icBody" style="display:none">
@@ -2400,7 +2400,7 @@ var CAS = (function () {
   function isFunc(name) { return FUNCS.indexOf(name) >= 0; }
   function isVar(name) { return VARS.indexOf(name) >= 0; }
 
-  /* شناسه‌های به‌هم‌چسبیده مثل 2xsin(x) را به اجزا می‌شکند */
+  /* شناسه‌های به‌هم‌چسبیده مثل 2xsin(x) را به اجزا می شکند */
   function identNode(id, toks, pos) {
     if (id === 'log') return { func: 'ln' };
     if (isFunc(id)) return { func: id };
@@ -2776,7 +2776,7 @@ var CAS = (function () {
     return out;
   }
 
-  /* نسبت F/u1 را عددی بررسی می‌کند؛ اگر ثابت بود مقدار را برمی‌گرداند */
+  /* نسبت F/u1 را عددی بررسی می کند؛ اگر ثابت بود مقدار را برمی گرداند */
   function propConst(F, u1, v) {
     const pts = [0.63, 1.37, -1.11, 2.29, -2.41, 3.03];
     let c = null;
@@ -3239,9 +3239,9 @@ var CAS = (function () {
     }
     const cvals = sol.map((v, i) => '<i>C</i><sub>' + (i + 1) + '</sub> = ' + inl(num(v)));
     steps.push(STEP('اعمال شرایط اولیه',
-      P('شرایط اولیه را در جواب عمومی و مشتق‌های آن جایگذاری می‌کنیم. با جایگذاری x<sub>0</sub> = ' + inl(num(x0)) + ' دستگاه خطی زیر به دست می‌آید:'),
+      P('شرایط اولیه را در جواب عمومی و مشتق‌های آن جایگذاری می کنیم. با جایگذاری x<sub>0</sub> = ' + inl(num(x0)) + ' دستگاه خطی زیر به دست می آید:'),
       MH('<div class="eq-list">' + eqLines.join('') + '</div>'),
-      P('این دستگاه را حل می‌کنیم:'),
+      P('این دستگاه را حل می کنیم:'),
       MH('<div class="eq-list">' + cvals.join(' &nbsp;، &nbsp; ') + '</div>')
     ));
     return steps;
@@ -3356,9 +3356,9 @@ var CAS = (function () {
     const blocks = [];
     blocks.push(P('شکل استاندارد معادلهٔ خطی مرتبهٔ اول چنین است:'));
     blocks.push(MH(vh + '′ + <span class="paren">(</span>' + inl(Pf) + '<span class="paren">)</span>' + vh + ' = ' + inl(Qf)));
-    blocks.push(P('ابتدا عامل انتگرال‌ساز را می‌سازیم:'));
+    blocks.push(P('ابتدا عامل انتگرال‌ساز را می سازیم:'));
     blocks.push(MH('<i>μ</i>(<i>x</i>) = <i>e</i><sup>∫<i>P</i> d<i>x</i></sup> = <i>e</i><sup>' + (core.IpOk ? inl(core.Ip) : '∫' + inl(Pf) + ' d<i>x</i>') + '</sup> = ' + inl(core.mu)));
-    blocks.push(P('دو طرف معادله را در μ ضرب می‌کنیم. سمت چپ به صورت مشتق حاصل‌ضرب درمی‌آید:'));
+    blocks.push(P('دو طرف معادله را در μ ضرب می کنیم. سمت چپ به صورت مشتق حاصل‌ضرب درمی آید:'));
     blocks.push(MH('<span class="paren">(</span><i>μ</i>' + vh + '<span class="paren">)</span>′ = <i>μ</i> · ' + inl(Qf)));
     blocks.push(P('با انتگرال‌گیری از دو طرف:'));
     blocks.push(MH('<i>μ</i>' + vh + ' = ' + (core.IOk ? inl(core.I) : '∫ ' + inl(core.muQ) + ' d<i>x</i>') + ' + <i>C</i><sub>1</sub>'));
@@ -3374,7 +3374,7 @@ var CAS = (function () {
     const core = linearCore(Pf, Qf);
     const steps = [];
     steps.push(STEP('تشخیص نوع معادله',
-      P('این معادله نسبت به <i>y</i> خطی است و می‌توان آن را به شکل استاندارد <b>معادلهٔ دیفرانسیل خطی مرتبهٔ اول</b> نوشت.'),
+      P('این معادله نسبت به <i>y</i> خطی است و می توان آن را به شکل استاندارد <b>معادلهٔ دیفرانسیل خطی مرتبهٔ اول</b> نوشت.'),
       MH('<i>y</i>′ = ' + inl(F)),
       P('یعنی:'),
       MH('<i>y</i>′ + <span class="paren">(</span>' + inl(Pf) + '<span class="paren">)</span><i>y</i> = ' + inl(Qf))
@@ -3417,14 +3417,14 @@ var CAS = (function () {
       MH('<i>y</i>′ + <span class="paren">(</span>' + inl(Pf) + '<span class="paren">)</span><i>y</i> = <span class="paren">(</span>' + inl(Qf) + '<span class="paren">)</span> <i>y</i><sup>' + inl(num(n)) + '</sup>')
     ));
     steps.push(STEP('تغییر متغیر',
-      P('دو طرف را بر <i>y</i><sup>n</sup> تقسیم می‌کنیم و تغییر متغیر زیر را به کار می‌بریم:'),
+      P('دو طرف را بر <i>y</i><sup>n</sup> تقسیم می کنیم و تغییر متغیر زیر را به کار می بریم:'),
       MH('<i>v</i> = <i>y</i><sup>1−n</sup> = <i>y</i><sup>' + inl(num(k)) + '</sup> &nbsp;⟹&nbsp; <i>v</i>′ = ' + inl(num(k)) + ' <i>y</i><sup>−' + inl(num(n)) + '</sup> <i>y</i>′'),
-      P('در این صورت معادله به یک معادلهٔ خطی مرتبهٔ اول در <i>v</i> تبدیل می‌شود:'),
+      P('در این صورت معادله به یک معادلهٔ خطی مرتبهٔ اول در <i>v</i> تبدیل می شود:'),
       MH('<i>v</i>′ + <span class="paren">(</span>' + inl(Pv) + '<span class="paren">)</span><i>v</i> = ' + inl(Qv))
     ));
     steps.push(STEP('حل معادلهٔ خطی در v', ...linearStepBlocks(Pv, Qv, core, 'v')));
     steps.push(STEP('بازگشت به متغیر اصلی',
-      P('با قرار دادن <i>v</i> = <i>y</i><sup>1−n</sup> جواب عمومی به دست می‌آید:'),
+      P('با قرار دادن <i>v</i> = <i>y</i><sup>1−n</sup> جواب عمومی به دست می آید:'),
       MH('<i>y</i><sup>' + inl(num(k)) + '</sup> = ' + inl(vSol)),
       MH('<i>y</i> = ' + inl(ySol))
     ));
@@ -3478,13 +3478,13 @@ var CAS = (function () {
     if (y1) {
       const guessed = !cfg.knownExpr;
       steps.push(STEP('جواب خصوصی معلوم',
-        P((guessed ? 'با بررسی چند گزینهٔ ساده، جواب خصوصی زیر پیدا شد و در معادله صدق می‌کند:' : 'جواب خصوصی داده‌شده در معادله صدق می‌کند:')),
+        P((guessed ? 'با بررسی چند گزینهٔ ساده، جواب خصوصی زیر پیدا شد و در معادله صدق می کند:' : 'جواب خصوصی داده شده در معادله صدق می کند:')),
         MH('<i>y</i><sub>1</sub> = ' + inl(y1)),
-        P('برای حل، از تغییر متغیر زیر استفاده می‌کنیم:'),
+        P('برای حل، از تغییر متغیر زیر استفاده می کنیم:'),
         MH('<i>y</i> = <i>y</i><sub>1</sub> + <i>u</i><sup>−1</sup>')
       ));
       steps.push(STEP('تبدیل به معادلهٔ خطی',
-        P('با جایگذاری این تغییر متغیر، معادلهٔ ریکاتی به یک معادلهٔ خطی مرتبهٔ اول در <i>u</i> تبدیل می‌شود:'),
+        P('با جایگذاری این تغییر متغیر، معادلهٔ ریکاتی به یک معادلهٔ خطی مرتبهٔ اول در <i>u</i> تبدیل می شود:'),
         MH('<i>u</i>′ + <span class="paren">(</span>' + inl(b2) + '<span class="paren">)</span><i>u</i> = ' + inl(neg(c)))
       ));
       steps.push(STEP('حل معادلهٔ خطی در u', ...linearStepBlocks(b2, neg(c), core, 'u')));
@@ -3575,11 +3575,11 @@ var CAS = (function () {
     const { f, g } = sp;
     const steps = [];
     steps.push(STEP('تشخیص معادلهٔ تفکیک‌پذیر',
-      P('معادله را می‌توان به صورت حاصل‌ضرب دو تابع، یکی فقط از <i>x</i> و دیگری فقط از <i>y</i>، نوشت:'),
+      P('معادله را می توان به صورت حاصل‌ضرب دو تابع، یکی فقط از <i>x</i> و دیگری فقط از <i>y</i>، نوشت:'),
       MH('<i>y</i>′ = <span class="paren">(</span>' + inl(f) + '<span class="paren">)</span><span class="paren">(</span>' + inl(g) + '<span class="paren">)</span>')
     ));
     steps.push(STEP('تفکیک متغیرها',
-      P('با تقسیم بر g(y) و ضرب در dx، متغیرها از هم جدا می‌شوند:'),
+      P('با تقسیم بر g(y) و ضرب در dx، متغیرها از هم جدا می شوند:'),
       MH(CAS.fracHtml(inl(num(1)), inl(g)) + ' d<i>y</i> = ' + inl(f) + ' d<i>x</i>')
     ));
     const invg = div(num(1), g);
@@ -3599,7 +3599,7 @@ var CAS = (function () {
       const e = div(rhs, num(kLog));
       general = mul(sy('C1'), CAS.expNode(e));
       steps.push(STEP('صریح‌سازی جواب',
-        P('با نمایی‌کردن دو طرف و ادغام ثابت (علامت قدر مطلق در ثابت پنهان می‌شود):'),
+        P('با نمایی‌کردن دو طرف و ادغام ثابت (علامت قدر مطلق در ثابت پنهان می شود):'),
         MH('<i>y</i> = <i>C</i><sub>1</sub> <i>e</i><sup>' + inl(e) + '</sup>')
       ));
     }
@@ -3653,7 +3653,7 @@ var CAS = (function () {
     const implicitY = simp(subs(implicit, { v: div(vr('y'), vr('x')) }));
     const steps = [];
     steps.push(STEP('تشخیص معادلهٔ همگن',
-      P('تابع سمت راست در <i>x</i> و <i>y</i> همگن از درجهٔ صفر است؛ یعنی با تغییر مقیاس (x,y) → (tx,ty) مقدار آن تغییر نمی‌کند. معادله را به شکل تابعی از y/x می‌نویسیم:'),
+      P('تابع سمت راست در <i>x</i> و <i>y</i> همگن از درجهٔ صفر است؛ یعنی با تغییر مقیاس (x,y) → (tx,ty) مقدار آن تغییر نمی کند. معادله را به شکل تابعی از y/x می نویسیم:'),
       MH('<i>y</i>′ = <i>G</i><span class="paren">(</span>' + CAS.fracHtml('<i>y</i>', '<i>x</i>') + '<span class="paren">)</span> = ' + inl(G))
     ));
     steps.push(STEP('تغییر متغیر v = y/x',
@@ -3675,7 +3675,7 @@ var CAS = (function () {
       ));
     } else {
       steps.push(STEP('بازگشت به y',
-        P('با جایگذاری v = y/x جواب عمومی به صورت ضمنی به دست می‌آید:'),
+        P('با جایگذاری v = y/x جواب عمومی به صورت ضمنی به دست می آید:'),
         MH(inl(implicitY) + ' = <i>C</i><sub>1</sub>')
       ));
     }
@@ -3732,12 +3732,12 @@ var CAS = (function () {
   function solveExact1(F, cfg, data) {
     const steps = [];
     steps.push(STEP('نوشتن معادله به شکل دیفرانسیلی',
-      P('معادله را به شکل زیر می‌نویسیم:'),
+      P('معادله را به شکل زیر می نویسیم:'),
       MH(inl(data.M) + ' d<i>x</i> + <span class="paren">(</span>' + inl(data.N) + '<span class="paren">)</span> d<i>y</i> = 0')
     ));
     if (data.exact) {
       steps.push(STEP('آزمون کامل بودن',
-        P('شرط کامل بودن را بررسی می‌کنیم:'),
+        P('شرط کامل بودن را بررسی می کنیم:'),
         MH(CAS.fracHtml('∂<i>M</i>', '∂<i>y</i>') + ' = ' + inl(data.My) + ' &nbsp;&nbsp;،&nbsp;&nbsp; ' + CAS.fracHtml('∂<i>N</i>', '∂<i>x</i>') + ' = ' + inl(data.Nx)),
         P('چون این دو برابرند، معادله <b>کامل</b> است و تابع پتانسیل U(x,y) وجود دارد.'),
         MH('∂<i>U</i>/∂<i>x</i> = <i>M</i> &nbsp;،&nbsp; ∂<i>U</i>/∂<i>y</i> = <i>N</i>')
@@ -3746,15 +3746,15 @@ var CAS = (function () {
       steps.push(STEP('یافتن عامل انتگرال‌ساز',
         P('معادلهٔ اولیه کامل نیست، زیرا:'),
         MH(CAS.fracHtml('∂<i>M</i>', '∂<i>y</i>') + ' = ' + inl(data.My) + ' ≠ ' + inl(data.Nx) + ' = ' + CAS.fracHtml('∂<i>N</i>', '∂<i>x</i>')),
-        P('با استفاده از نسبت مناسب، عامل انتگرال‌ساز به دست می‌آید:'),
+        P('با استفاده از نسبت مناسب، عامل انتگرال‌ساز به دست می آید:'),
         MH('<i>μ</i> = <i>e</i><sup>∫ ' + inl(data.muType === 'x' ? div(sub(data.My, data.Nx), data.N) : div(sub(data.Nx, data.My), data.M)) + ' d' + data.muType + '</sup> = ' + inl(data.mu)),
-        P('با ضرب معادله در μ، معادلهٔ جدید کامل می‌شود.'),
+        P('با ضرب معادله در μ، معادلهٔ جدید کامل می شود.'),
         MH(inl(data.M2) + ' d<i>x</i> + <span class="paren">(' + inl(data.N2) + ')</span> d<i>y</i> = 0')
       ));
     }
     const core = data.core;
     steps.push(STEP('یافتن تابع پتانسیل',
-      P('از ∂U/∂x = M انتگرال می‌گیریم:'),
+      P('از ∂U/∂x = M انتگرال می گیریم:'),
       MH('<i>U</i> = ' + inl(core.Ux) + ' + <i>g</i>(<i>y</i>)'),
       P('با مشتق‌گیری نسبت به y و برابر قرار دادن با N:'),
       MH('<i>g</i>′(<i>y</i>) = ' + inl(core.gP)),
@@ -3806,7 +3806,7 @@ var CAS = (function () {
     const gen = add(mul(sy('C1'), vr('x')), simp(subs(phi, { yp: sy('C1') })));
     const steps = [];
     steps.push(STEP('تشخیص معادلهٔ کلرو',
-      P('معادله از نوع <b>کلرو</b> است و می‌توان آن را به شکل زیر نوشت:'),
+      P('معادله از نوع <b>کلرو</b> است و می توان آن را به شکل زیر نوشت:'),
       MH('<i>y</i> = <i>x</i><i>y</i>′ + <i>φ</i>(<i>y</i>′) &nbsp;،&nbsp; <i>φ</i>(<i>p</i>) = ' + inl(phi))
     ));
     steps.push(STEP('مشتق‌گیری از دو طرف',
@@ -3825,7 +3825,7 @@ var CAS = (function () {
       const xPar = simp(neg(subs(dphi, { yp: vr('t') })));
       const yPar = simp(add(mul(vr('t'), xPar), subs(phi, { yp: vr('t') })));
       steps.push(STEP('جواب منفرد (پارامتری)',
-        P('حالت دوم x + φ′(p) = 0 جواب منفرد را به شکل پارامتری می‌دهد:'),
+        P('حالت دوم x + φ′(p) = 0 جواب منفرد را به شکل پارامتری می دهد:'),
         MH('<i>x</i> = ' + inl(xPar) + ' &nbsp;،&nbsp; <i>y</i> = <i>t</i> <i>x</i> + <i>φ</i>(<i>t</i>)'),
         MH('<i>y</i> = ' + inl(yPar)),
         NOTE('این جواب در حالت کلی پوش دستهٔ خطوط y = Cx + φ(C) است و در جواب عمومی مستتر نیست.')
@@ -3865,7 +3865,7 @@ var CAS = (function () {
     if (!p) throw new Error('معادله نسبت به y′ چندجمله‌ای نیست؛ ورودی را ساده‌تر بنویسید.');
     const deg = p.length ? p[p.length - 1].d : 0;
     if (deg === 0) throw new Error('عبارت واردشده شامل y′ نیست؛ این یک معادلهٔ دیفرانسیل نیست.');
-    if (deg > 2) throw new Error('معادله نسبت به y′ از درجهٔ ' + deg + ' است؛ این نسخه تا درجهٔ دوم (کلرو) را پشتیبانی می‌کند.');
+    if (deg > 2) throw new Error('معادله نسبت به y′ از درجهٔ ' + deg + ' است؛ این نسخه تا درجهٔ دوم (کلرو) را پشتیبانی می کند.');
 
     const coef = d => (p.find(o => o.d === d) || { c: num(0) }).c;
     c0 = coef(0); c1 = coef(1);
@@ -3931,25 +3931,25 @@ var CAS = (function () {
   function unsupportedFirst(F, cfg, c0, c1) {
     const steps = [];
     steps.push(STEP('تشخیص نوع معادله',
-      P('معادله به شکل صریح زیر نوشته می‌شود:'),
+      P('معادله به شکل صریح زیر نوشته می شود:'),
       MH('<i>y</i>′ = ' + inl(F)),
       P('این معادله در دسته‌های استاندارد تفکیک‌پذیر، خطی، همگن، کامل، برنولی، ریکاتی یا کلرو قرار نگرفت.')
     ));
     steps.push(STEP('پیشنهادها',
       LIST([
-        'اگر یکی از جواب‌های خصوصی معادله را می‌دانید، آن را در کادر «جواب معلوم» وارد کنید (برای ریکاتی یا کاهش مرتبه).',
-        'می‌توانید معادله را با تغییر متغیر ساده کنید؛ برای نمونه تغییر متغیرهای u = y/x یا v = y/x² را امتحان کنید.',
+        'اگر یکی از جواب‌های خصوصی معادله را می دانید، آن را در کادر «جواب معلوم» وارد کنید (برای ریکاتی یا کاهش مرتبه).',
+        'می توانید معادله را با تغییر متغیر ساده کنید؛ برای نمونه تغییر متغیرهای u = y/x یا v = y/x² را امتحان کنید.',
         'برای حل عددی، از روش‌های اویلر یا رونگه–کوتا استفاده کنید.'
       ])
     ));
     return ST.result({
       ok: false, incomplete: true,
       method: 'روش تحلیلی استاندارد پیدا نشد',
-      methodNote: 'معادله در الگوهای شناخته‌شدهٔ این نسخه قرار نمی‌گیرد',
+      methodNote: 'معادله در الگوهای شناخته‌شدهٔ این نسخه قرار نمی گیرد',
       tags: [TAGS.vorodi],
       steps,
       warnings: ['این معادله با روش‌های تحلیلی داخل برنامه حل نشد.',
-        'برخی معادلات مرتبهٔ اول فقط با تغییر متغیرهای خاص یا به صورت سری/عددی حل می‌شوند.']
+        'برخی معادلات مرتبهٔ اول فقط با تغییر متغیرهای خاص یا به صورت سری/عددی حل می شوند.']
     });
   }
 
@@ -4164,7 +4164,7 @@ var CAS = (function () {
         b = Math.abs(k);
         continue;
       }
-      if (f0.t === 'f' && f0.f === 'ln') { /* پشتیبانی نمی‌شود */ return null; }
+      if (f0.t === 'f' && f0.f === 'ln') { /* پشتیبانی نمی شود */ return null; }
       if (f0.t === 'f' && f0.f === 'abs') return null;
       if (f0.t === 'f') return null;
       return null;
@@ -4345,7 +4345,7 @@ var CAS = (function () {
     }
     let n = order0;
     while (n > 0 && CAS.isZero(coeffs[n])) n--;
-    if (n === 0) throw new Error('ضریب بالاترین مشتق صفر است و معادله عملاً جبری می‌شود.');
+    if (n === 0) throw new Error('ضریب بالاترین مشتق صفر است و معادله عملاً جبری می شود.');
     const cs = coeffs.slice(0, n + 1);
     cfg.order = n;
 
@@ -4387,14 +4387,14 @@ var CAS = (function () {
         MH('L[y] = ' + inl(L) + (nonhom ? ' = ' + inl(R) : ' = 0'))
       ));
       steps.push(STEP('تشکیل معادلهٔ مشخصه',
-        P('برای جواب‌های نمایی <span class="math-inline"><i>y</i> = <i>e</i><sup><i>rx</i></sup></span>، معادلهٔ مشخصه به دست می‌آید:'),
+        P('برای جواب‌های نمایی <span class="math-inline"><i>y</i> = <i>e</i><sup><i>rx</i></sup></span>، معادلهٔ مشخصه به دست می آید:'),
         MH('<i>P</i>(<i>r</i>) = ' + CAS._charPolyString(coeffDesk, 'r') + ' = 0')
       ));
       steps.push(STEP('ریشه‌های معادلهٔ مشخصه',
         ...rootBlocks(info, n, n === 2 ? { a2: consts[2], a1: consts[1], a0: consts[0] } : null)
       ));
       steps.push(STEP('ساخت جواب عمومی همگن',
-        P('بر اساس نوع ریشه‌ها، جواب‌های پایه (مستقل خطی) ساخته می‌شوند:'),
+        P('بر اساس نوع ریشه‌ها، جواب‌های پایه (مستقل خطی) ساخته می شوند:'),
         LIST(basisExplanation(info, n)),
         MH('<i>y</i><sub>h</sub> = ' + yhHtml(basis))
       ));
@@ -4412,25 +4412,25 @@ var CAS = (function () {
       steps.push(STEP('تشخیص معادلهٔ کوشی–اویلر',
         P('ضرایب معادله به ترتیب توان‌های x هستند؛ یعنی ضریب مشتق k‌ام با x<sup>k</sup> متناسب است. این معادله از نوع <b>کوشی–اویلر</b> است:'),
         MH(inl(L) + (nonhom ? ' = ' + inl(R) : ' = 0')),
-        P('با تغییر متغیر <span class="math-inline"><i>x</i> = <i>e</i><sup><i>t</i></sup></span> (یا فرض <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span>) به معادلهٔ خطی با ضرایب ثابت تبدیل می‌شود.')
+        P('با تغییر متغیر <span class="math-inline"><i>x</i> = <i>e</i><sup><i>t</i></sup></span> (یا فرض <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span>) به معادلهٔ خطی با ضرایب ثابت تبدیل می شود.')
       ));
       steps.push(STEP('معادلهٔ شاخصی',
-        P('با جایگذاری <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span> در معادله، معادلهٔ شاخصی (مشخصه) به دست می‌آید:'),
+        P('با جایگذاری <span class="math-inline"><i>y</i> = <i>x</i><sup><i>λ</i></sup></span> در معادله، معادلهٔ شاخصی (مشخصه) به دست می آید:'),
         MH(CAS._charPolyString(eulerInfo, 'λ') + ' = 0')
       ));
       steps.push(STEP('ریشه‌های معادلهٔ شاخصی',
         ...rootBlocks(info, n, null, 'λ')
       ));
       steps.push(STEP('جواب عمومی همگن',
-        P('با ریشه‌های λ، جواب‌ها به شکل <span class="math-inline"><i>x</i><sup>λ</sup></span> (و در حالت مختلط <span class="math-inline"><i>x</i><sup>α</sup>cos(β ln x)</span>) ساخته می‌شوند:'),
+        P('با ریشه‌های λ، جواب‌ها به شکل <span class="math-inline"><i>x</i><sup>λ</sup></span> (و در حالت مختلط <span class="math-inline"><i>x</i><sup>α</sup>cos(β ln x)</span>) ساخته می شوند:'),
         MH('<i>y</i><sub>h</sub> = ' + yhHtml(basis))
       ));
-      if (cfg.x0 <= 0) warnings.push('جواب کوشی–اویلر روی بازهٔ x > 0 نوشته می‌شود؛ نقطهٔ x₀ باید مثبت باشد.');
+      if (cfg.x0 <= 0) warnings.push('جواب کوشی–اویلر روی بازهٔ x > 0 نوشته می شود؛ نقطهٔ x₀ باید مثبت باشد.');
     } else if (n === 2 && cfg.knownExpr) {
       const y1 = cfg.knownExpr;
       const lhs1 = add(mul(cs[2], CAS.nthDiff(y1, 'x', 2)), mul(cs[1], diff(y1, 'x')), mul(cs[0], y1));
       if (!CAS.isZero(lhs1)) {
-        throw new Error('جواب معلوم واردشده در معادله صدق نمی‌کند؛ آن را بررسی کنید.');
+        throw new Error('جواب معلوم واردشده در معادله صدق نمی کند؛ آن را بررسی کنید.');
       }
       const red = CAS._reductionOfOrder(y1, cs[1], cs[2]);
       basis = [y1, red.y2];
@@ -4439,7 +4439,7 @@ var CAS = (function () {
       methodNote = 'یافتن جواب دوم مستقل خطی';
       tags = [TAGS.orden2, TAGS.linear];
       steps.push(STEP('جواب معلوم و تغییر متغیر',
-        P('جواب <span class="math-inline"><i>y</i><sub>1</sub> = ' + inl(y1) + '</span> در معادله صدق می‌کند. برای یافتن جواب دوم مستقل، از تغییر متغیر <span class="math-inline"><i>y</i> = <i>u</i>(<i>x</i>)<i>y</i><sub>1</sub></span> استفاده می‌کنیم.'),
+        P('جواب <span class="math-inline"><i>y</i><sub>1</sub> = ' + inl(y1) + '</span> در معادله صدق می کند. برای یافتن جواب دوم مستقل، از تغییر متغیر <span class="math-inline"><i>y</i> = <i>u</i>(<i>x</i>)<i>y</i><sub>1</sub></span> استفاده می کنیم.'),
         MH('<i>y</i><sub>2</sub> = <i>y</i><sub>1</sub> ∫ ' + CAS.fracHtml('<i>e</i><sup>−∫<i>P</i> d<i>x</i></sup>', '<i>y</i><sub>1</sub><sup>2</sup>') + ' d<i>x</i>')
       ));
       steps.push(STEP('محاسبهٔ جواب دوم',
@@ -4452,7 +4452,7 @@ var CAS = (function () {
         MH('<i>y</i> = ' + inl(yh))
       ));
     } else {
-      throw new Error('این معادلهٔ خطی مرتبهٔ ' + n + ' با ضرایب متغیر است و در قالب کوشی–اویلر یا کاهش مرتبه حل نمی‌شود. برای مرتبهٔ دوم می‌توانید یک جواب معلوم وارد کنید.');
+      throw new Error('این معادلهٔ خطی مرتبهٔ ' + n + ' با ضرایب متغیر است و در قالب کوشی–اویلر یا کاهش مرتبه حل نمی شود. برای مرتبهٔ دوم می توانید یک جواب معلوم وارد کنید.');
     }
 
     /* ---------------- بخش ناهمگن ---------------- */
@@ -4463,16 +4463,16 @@ var CAS = (function () {
         if (und) {
           yp = und.yp; partInfo = und; partMethod = 'undetermined';
           steps.push(STEP('انتخاب شکل جواب خصوصی (ضرایب نامعین)',
-            P('جملهٔ ناهمگن ترکیبی از چندجمله‌ای، نمایی و توابع مثلثاتی است. شکل حدسی جواب خصوصی را با ضرایب نامعین می‌نویسیم:'),
+            P('جملهٔ ناهمگن ترکیبی از چندجمله‌ای، نمایی و توابع مثلثاتی است. شکل حدسی جواب خصوصی را با ضرایب نامعین می نویسیم:'),
             MH(trialHtml(und.basis)),
-            P('با جایگذاری در معادله و مساوی قرار دادن ضرایب، دستگاه خطی ضرایب حل می‌شود.'),
+            P('با جایگذاری در معادله و مساوی قرار دادن ضرایب، دستگاه خطی ضرایب حل می شود.'),
             MH('<i>y</i><sub>p</sub> = ' + inl(yp))
           ));
         } else if (n === 2) {
           variation = CAS._variation2(basis, R, cs[2]);
           yp = variation.yp; partMethod = 'variation';
           steps.push(STEP('روش تغییر پارامترها',
-            P('چون جملهٔ ناهمگن در قالب ضرایب نامعین نمی‌گنجد، از روش تغییر پارامترها استفاده می‌کنیم:'),
+            P('چون جملهٔ ناهمگن در قالب ضرایب نامعین نمی گنجد، از روش تغییر پارامترها استفاده می کنیم:'),
             MH('<i>y</i><sub>p</sub> = −<i>y</i><sub>1</sub> ∫ ' + CAS.fracHtml('<i>y</i><sub>2</sub><i>g</i>', '<i>W</i>') + ' d<i>x</i> + <i>y</i><sub>2</sub> ∫ ' + CAS.fracHtml('<i>y</i><sub>1</sub><i>g</i>', '<i>W</i>') + ' d<i>x</i>'),
             MH('<i>W</i>(<i>y</i><sub>1</sub>,<i>y</i><sub>2</sub>) = ' + inl(variation.W)),
             MH('<i>y</i><sub>p</sub> = ' + inl(yp)),
@@ -4483,7 +4483,7 @@ var CAS = (function () {
         variation = CAS._variation2(basis, R, cs[2]);
         yp = variation.yp; partMethod = 'variation';
         steps.push(STEP('جواب خصوصی با تغییر پارامترها',
-          P('برای معادلهٔ کوشی–اویلر ناهمگن، از تغییر پارامترها استفاده می‌کنیم:'),
+          P('برای معادلهٔ کوشی–اویلر ناهمگن، از تغییر پارامترها استفاده می کنیم:'),
           MH('<i>W</i> = ' + inl(variation.W)),
           MH('<i>y</i><sub>p</sub> = ' + inl(yp))
         ));
@@ -4527,7 +4527,7 @@ var CAS = (function () {
           warnings.push('شرایط اولیه با دقت عددی برقرار نشدند؛ ممکن است شرایط ناسازگار یا نقطهٔ x₀ تکین باشد.');
         }
       } else {
-        warnings.push('دستگاه شرایط اولیه تکین بود و ثابت‌ها به‌دست نیامدند.');
+        warnings.push('دستگاه شرایط اولیه تکین بود و ثابت‌ها به دست نیامدند.');
       }
     }
 
@@ -4535,7 +4535,7 @@ var CAS = (function () {
       const err = CAS.verifyResult(cfg, particular || general);
       if (err !== null && err < 1e-5) {
         steps.push(STEP('بررسی صحت جواب',
-          P('جواب به‌دست‌آمده در معادلهٔ اصلی جایگذاری و در چند نقطه به‌صورت عددی بررسی شد؛ باقی‌ماندهٔ معادله در حد خطای گردکردن صفر است. ✓')
+          P('جواب به دست‌آمده در معادلهٔ اصلی جایگذاری و در چند نقطه به‌صورت عددی بررسی شد؛ باقی‌ماندهٔ معادله در حد خطای گردکردن صفر است. ✓')
         ));
       }
     }
@@ -4579,7 +4579,7 @@ var CAS = (function () {
     steps.push(STEP('جواب همگن', MH('<i>y</i><sub>h</sub> = ' + inl(yh))));
     const v = CAS._variation2(basis, R, a2);
     steps.push(STEP('روش تغییر پارامترها',
-      P('جواب خصوصی با فرمول تغییر پارامترها محاسبه می‌شود:'),
+      P('جواب خصوصی با فرمول تغییر پارامترها محاسبه می شود:'),
       MH('<i>W</i> = <i>y</i><sub>1</sub><i>y</i><sub>2</sub>′ − <i>y</i><sub>1</sub>′<i>y</i><sub>2</sub> = ' + inl(v.W)),
       MH('<i>y</i><sub>p</sub> = ' + inl(v.yp))
     ));
@@ -4596,7 +4596,7 @@ var CAS = (function () {
 
   function buildUndetAlt(cfg, basis, R, info, consts) {
     const und = CAS._undetermined(consts.slice().reverse(), R, info);
-    if (!und) throw new Error('روش ضرایب نامعین برای این جملهٔ ناهمگن به کار نمی‌رود.');
+    if (!und) throw new Error('روش ضرایب نامعین برای این جملهٔ ناهمگن به کار نمی رود.');
     const yh = yhFromBasis(basis);
     const steps = [];
     steps.push(STEP('جواب همگن', MH('<i>y</i><sub>h</sub> = ' + inl(yh))));
@@ -4652,7 +4652,7 @@ var CAS = (function () {
         const C = CAS.evalNum(U, { x: cfg.x0, y: cfg.y0s[0] });
         if (isFinite(C)) {
           res.steps.push(STEP('اعمال شرایط اولیه',
-            P('شرط اولیه را در جواب ضمنی جایگذاری می‌کنیم:'),
+            P('شرط اولیه را در جواب ضمنی جایگذاری می کنیم:'),
             MH(inl(U) + ' = <i>C</i><sub>1</sub> &nbsp;⟹&nbsp; ' + inl(num(CAS.chop(C))) + ' = <i>C</i><sub>1</sub>'),
             P('بنابراین جواب خصوصی (به صورت ضمنی) چنین است:'),
             MH(inl(U) + ' = ' + inl(num(CAS.chop(C))))
@@ -4689,7 +4689,7 @@ var CAS = (function () {
 
     const c = CAS.findC1(gen, cfg.x0, cfg.y0s[0]);
     if (c === null || !isFinite(c)) {
-      res.warnings.push('یافتن مقدار C₁ از شرط اولیه با روش عددی ممکن نشد؛ جواب عمومی نمایش داده می‌شود.');
+      res.warnings.push('یافتن مقدار C₁ از شرط اولیه با روش عددی ممکن نشد؛ جواب عمومی نمایش داده می شود.');
       res.answerHtml = inl(gen);
       res.answerLabel = 'جواب عمومی';
       res.answerExpr = gen;
@@ -4697,9 +4697,9 @@ var CAS = (function () {
     }
     const part = simp(subs(gen, { C1: num(c) }));
     res.steps.push(STEP('اعمال شرایط اولیه',
-      P('شرط اولیهٔ <span class="math-inline"><i>y</i>(' + inl(num(cfg.x0)) + ') = ' + inl(num(cfg.y0s[0])) + '</span> را در جواب عمومی جایگذاری می‌کنیم:'),
+      P('شرط اولیهٔ <span class="math-inline"><i>y</i>(' + inl(num(cfg.x0)) + ') = ' + inl(num(cfg.y0s[0])) + '</span> را در جواب عمومی جایگذاری می کنیم:'),
       MH(inl(gen) + ' &nbsp;در&nbsp; <i>x</i> = ' + inl(num(cfg.x0)) + ' ⟹ ' + inl(num(cfg.y0s[0]))),
-      P('و مقدار ثابت به‌دست می‌آید:'),
+      P('و مقدار ثابت به دست می آید:'),
       MH('<i>C</i><sub>1</sub> = ' + inl(num(c))),
       P('پس جواب خصوصی نهایی:'),
       MH('<i>y</i> = ' + inl(part))
@@ -4713,7 +4713,7 @@ var CAS = (function () {
     const err = CAS.verifyResult(cfg, part);
     if (err !== null && err < 1e-6) {
       res.steps.push(STEP('بررسی صحت جواب',
-        P('جواب خصوصی در معادلهٔ اصلی جایگذاری و بررسی شد؛ هم در معادله و هم در شرط اولیه صدق می‌کند. ✓')
+        P('جواب خصوصی در معادلهٔ اصلی جایگذاری و بررسی شد؛ هم در معادله و هم در شرط اولیه صدق می کند. ✓')
       ));
     }
     return res;
@@ -5046,7 +5046,7 @@ var CAS = (function () {
       '<div class="empty-state fade-in">' +
       '<div class="icon">pgu</div>' +
       '<h3>' + esc(title || 'آمادهٔ حل هستید') + '</h3>' +
-      '<p>' + esc(text || 'ضرایب معادله را وارد کنید و دکمهٔ «حل گام به گام» را بزنید. برنامه نوع معادله را تشخیص می‌دهد و مراحل را به فارسی توضیح می‌دهد.') + '</p>' +
+      '<p>' + esc(text || 'ضرایب معادله را وارد کنید و دکمهٔ «حل گام به گام» را بزنید. برنامه نوع معادله را تشخیص می دهد و مراحل را به فارسی توضیح می دهد.') + '</p>' +
       '</div>';
   }
 
@@ -5408,7 +5408,7 @@ var CAS = (function () {
   var selectedFn = 'exp';
 
   var TITLES = {
-    power: 'توان — عبارت بالا نوشته می‌شود',
+    power: 'توان — عبارت بالا نوشته می شود',
     frac: 'کسر — صورت بالا و مخرج پایین',
     sqrt: 'ریشه — عبارت داخل رادیکال',
     abs: 'قدر مطلق',
